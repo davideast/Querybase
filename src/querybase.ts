@@ -24,51 +24,64 @@ class QueryRef {
     var dataWithIndex = this._addIndexToData(this.schema, data);
     this.ref.push().set(dataWithIndex);
   }
-
-  /*
-   * var ref = new QueryRef(ref, ['name', 'age', 'location']);
-   * var query = ref.where({ name: 'david', age: 28 });
-   */
+  
   where(criteria): FirebaseQuery {
-    var criteriaIndex = "_where_" + Object.keys(criteria).join('_');
-    var criteriaValues = this._values(criteria).join('_');
-    return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues);
+    const keys = Object.keys(criteria);
+    const values = this._values(criteria);
+    
+    if (keys.length > 1) {
+      var criteriaIndex = keys.join('_');
+      var criteriaValues = values.join('_');
+      return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues); 
+    }
+    
+    // single criteria 
+    return this.ref.orderByChild(keys[0]).equalTo(values[0]);
   }
   
-  private getPathFromRef(ref): string {
-    const PATH_POSITION = 3;
-    var pathArray = ref.toString().split('/');
-    return pathArray.slice(PATH_POSITION, pathArray.length).join('/');
+  private _createKey(propOne, propTwo) {
+    return `${propOne}_${propTwo}`;
   }
   
-  private _createIndexes(properties: any[], data: any, propHash?: any) {
+  private _createIndexes(properties: any[], data: any, indexHash?: any) {
+    // create a copy of the array to not modifiy the original properties
     var propCop = properties.slice();
+    // remove the first property, this ensures no redundant keys are created (age_name vs. name_age)
     var mainProp = propCop.shift()
-    var propHash = propHash || {};
+    // recursive check for the indexHash
+    var indexHash = indexHash || {};
 
     propCop.forEach((prop) => {
       var propString = "";
       var valueString = "";
 
-      propHash["_where_" + mainProp + "_" + prop] = data[mainProp] + "_" + data[prop];
+      indexHash[this._createKey(mainProp, prop)] = this._createKey(data[mainProp], data[prop]);
 
       propCop.forEach((subProp) => {
-        propString = propString + "_" + subProp;
-        valueString = valueString + "_" + data[subProp];
+        propString = this._createKey(propString, subProp);
+        valueString = this._createKey(valueString, data[subProp]);
       });
       
-      propHash["_where_" + mainProp + propString] = data[mainProp] + valueString;
+      indexHash[mainProp + propString] = data[mainProp] + valueString;
+      
     });
 
     if (propCop.length !== 0) {
-      this._createIndexes(propCop, data, propHash);
+      this._createIndexes(propCop, data, indexHash);
     }
 
-    return propHash;
+    return indexHash;
   }
+  
+  private _getPathFromRef(ref): string {
+    const PATH_POSITION = 3;
+    var pathArray = ref.toString().split('/');
+    return pathArray.slice(PATH_POSITION, pathArray.length).join('/');
+  }  
   
   private _addIndexToData(schema, data) {
     var indexes = this._createIndexes(schema, data);
+    this._warnAboutIndexOnRule(indexes);
     var merged = this._merge(data, indexes);
     return merged;
   }
@@ -86,6 +99,21 @@ class QueryRef {
   
   private _values(obj) {
     return Object.keys(obj).map(key => { return obj[key]; });
+  }
+  
+  private _arrayToObject(arr: any[]) {
+    var hash = {};
+    arr.forEach((item) => hash[item] = item);
+    return hash;
+  }
+  
+  private _warnAboutIndexOnRule(obj) {
+    var indexKeys = this._merge(obj, this._arrayToObject(this.schema));
+    var indexOnRule =  `
+"${this._getPathFromRef(this.ref)}": {
+  ".indexOn": [${Object.keys(indexKeys).map((key) => { return `"${key}"`; }).join(", ")}]
+}`;
+    console.warn(`Add this rule to improve performance of your Firebase queries: \n ${indexOnRule}`);
   }
 
 }
