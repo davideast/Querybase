@@ -1,0 +1,21 @@
+{
+  "name": "querybase",
+  "version": "0.0.1",
+  "description": "Multiple order by queries with Firebase",
+  "main": "querybase.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "Firebase"
+  ],
+  "author": "David East",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-typescript": "^2.10.0"
+  },
+  "dependencies": {
+    "firebase": "^2.3.2"
+  }
+}

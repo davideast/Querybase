@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
+	<script src="querybase.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+</head>
+<body>
+
+	<button id="btnClick">Click</button>
+
+	<script>
+		var ref = new Firebase("https://flamethrow.firebaseio.com/people");
+		var queryRef = new QueryRef(ref, ['name', 'age', 'location']);
+		btnClick.addEventListener('click', function(e) {
+			queryRef.push({
+				name: 'david',
+				age: 28,
+				location: 'DEN'
+			});
+		});
+		
+		function addPerson(name, age, location) {
+			queryRef.push({
+				name: name,
+				age: age,
+				location: location
+			});
+		}
+	</script>
+
+</body>
+</html>
