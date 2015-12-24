@@ -1,6 +1,6 @@
 /// <reference path="../typings/firebase/firebase.d.ts" />
 
-class QueryRef {
+class Querybase {
   
   ref: Firebase;
   schema: any;
@@ -27,11 +27,20 @@ class QueryRef {
     this.ref.push().set(dataWithIndex);
   }
   
+  remove() {
+    return this.ref.remove();
+  }
+  
+  onDisconnect() {
+    return this.ref.onDisconnect();
+  }
+  
   where(criteria): FirebaseQuery {
     const keys = Object.keys(criteria);
     const values = this._values(criteria);
     
-    if (keys.length > 1) {
+    // multiple criteria
+    if (this._hasMultipleCriteria(keys)) {
       var criteriaIndex = keys.join('_');
       var criteriaValues = values.join('_');
       return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues); 
@@ -39,6 +48,10 @@ class QueryRef {
     
     // single criteria 
     return this.ref.orderByChild(keys[0]).equalTo(values[0]);
+  }
+  
+  private _hasMultipleCriteria(criteriaKeys) {
+    return criteriaKeys.length > 1;
   }
   
   private _createKey(propOne, propTwo) {

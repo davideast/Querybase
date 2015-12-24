@@ -12,7 +12,7 @@
 
 	<script>
 		var ref = new Firebase("https://flamethrow.firebaseio.com/people");
-		var queryRef = new QueryRef(ref, ['name', 'age', 'location']);
+		var queryRef = new Querybase(ref, ['name', 'age', 'location']);
 		btnClick.addEventListener('click', function(e) {
 			queryRef.push({
 				name: 'david',
