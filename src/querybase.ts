@@ -8,6 +8,8 @@ class QueryRef {
   constructor(ref: Firebase, schema: any) {
     this.ref = ref;
     this.schema = schema;
+    var indexes = this._createIndexes(schema, this._arrayToObject(schema));
+    this._warnAboutIndexOnRule(indexes);
   }
 
   set(data) {
@@ -81,7 +83,6 @@ class QueryRef {
   
   private _addIndexToData(schema, data) {
     var indexes = this._createIndexes(schema, data);
-    this._warnAboutIndexOnRule(indexes);
     var merged = this._merge(data, indexes);
     return merged;
   }
