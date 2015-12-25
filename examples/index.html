@@ -8,18 +8,33 @@
 </head>
 <body>
 
-	<button id="btnClick">Click</button>
+	<button id="btnSeed">Seed</button>
 
 	<script>
-		var ref = new Firebase("https://flamethrow.firebaseio.com/people");
-		var queryRef = new Querybase(ref, ['name', 'age', 'location']);
-		btnClick.addEventListener('click', function(e) {
-			queryRef.push({
-				name: 'david',
-				age: 27,
-				location: 'DEN'
-			});
+		var ref = new Firebase("https://flamethrow.firebaseio.com/");
+		var peopleRef = ref.child("people");
+		var indexRef = ref.child('people_index');
+		var ageIndexRef = indexRef.child('age');
+		var ageLocationIndexRef = indexRef.child('age_location');
+		var queryRef = new Querybase(peopleRef, ['name', 'age', 'location']);
+		
+		btnSeed.addEventListener('click', function(e) {
+			peopleRef.remove();
+			addPerson('David', 27, 'SF');
+			addPerson('Shannon', 28, 'SF');
+			addPerson('Coco', 1, 'SF');
+			addPerson('Cash', 3, 'SF');
+			addPerson('George', 27, 'DEN');
+			addPerson('Bob', '27', 'SF');
+			addPerson('Molly', 6, 'SF');
+			addPerson('Mambo', 28, 'DEN');
 		});
+		
+		function listen(ref) {
+			ref.on('value', function(snap) { 
+				console.log(snap.val());
+			});
+		}
 		
 		function addPerson(name, age, location) {
 			queryRef.push({

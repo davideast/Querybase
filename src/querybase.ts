@@ -1,5 +1,21 @@
 /// <reference path="../typings/firebase/firebase.d.ts" />
 
+class QuerybaseQuery {
+  
+  constructor(query: FirebaseQuery) {
+    
+  }
+  
+  lessThan(value) {
+    
+  }
+  
+  greaterThan(value) {
+    
+  }
+  
+}
+
 class Querybase {
   
   ref: Firebase;
@@ -35,7 +51,12 @@ class Querybase {
     return this.ref.onDisconnect();
   }
   
-  where(criteria): FirebaseQuery {
+  where(criteria): any {
+    
+    if (this._isString(criteria)) {
+      return new QuerybaseQuery(this.ref.orderByChild(criteria));
+    } 
+    
     const keys = Object.keys(criteria);
     const values = this._values(criteria);
     
@@ -48,6 +69,10 @@ class Querybase {
     
     // single criteria 
     return this.ref.orderByChild(keys[0]).equalTo(values[0]);
+  }
+  
+  private _isString(value): boolean {
+    return typeof value === 'string' || value instanceof String;
   }
   
   private _hasMultipleCriteria(criteriaKeys) {
