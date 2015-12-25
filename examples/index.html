@@ -43,6 +43,15 @@
 				location: location
 			});
 		}
+		
+		function numberify(string) {
+			var chars = string.split('');
+			var values = chars.map(function(char) {
+				return char.charCodeAt(0);
+			});
+			return values.join('');
+		}
+		
 	</script>
 
 </body>
