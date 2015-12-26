@@ -45,6 +45,10 @@ class QuerybaseUtils {
     return hash;
   }
   
+  sortLexicographically(prop) {
+   return function(a,b){ return a[prop].localeCompare(b[prop]); };
+  }
+  
 }
 
 class QuerybaseQuery {
@@ -75,29 +79,33 @@ class QuerybaseQuery {
 class Querybase {
   
   ref: Firebase;
+  indexRef: Firebase;
   schema: any;
-  _: QuerybaseUtils;
+  private _: QuerybaseUtils;
+  private _path: string;
   
   constructor(ref: Firebase, schema: any) {
-    this.ref = ref;
-    this.schema = schema;
     this._ = new QuerybaseUtils();
+    this.ref = ref;
+    this._path = this._.getPathFromRef(ref);
+    this.indexRef = this.ref.root().child(`${this._path}_index`);
+    this.schema = schema;
     var indexes = this._createIndexes(schema, this._.arrayToObject(schema));
     this._warnAboutIndexOnRule(indexes);
   }
 
   set(data) {
-    var dataWithIndex = this._addIndexToData(this.schema, data);
+    var dataWithIndex = this._indexData(this.schema, data, this.ref.key());
     this.ref.set(dataWithIndex);
   }
 
   update(data) {
-    var dataWithIndex = this._addIndexToData(this.schema, data);
+    var dataWithIndex = this._indexData(this.schema, data, this.ref.key());
     this.ref.update(dataWithIndex);
   }
 
   push(data) {
-    const dataWithIndex = this._indexData(this.schema, data);
+    const dataWithIndex = this._indexData(this.schema, data, this.ref.push().key());
     this.ref.parent().update(dataWithIndex);
   }
   
@@ -111,6 +119,8 @@ class Querybase {
   
   where(criteria): any {
     
+    var queryBuilder = { comparisons: [] };
+    
     if (this._.isString(criteria)) {
       return new QuerybaseQuery(this.ref.orderByChild(criteria));
     } 
@@ -120,8 +130,36 @@ class Querybase {
     
     // multiple criteria
     if (this._.hasMultipleCriteria(keys)) {
+      
+      // look at values for comparisons
+      keys.forEach((key) => {
+        var value = criteria[key];
+        if(value.substring(0, 1) == '>') {
+          queryBuilder.comparisons.push(`startAt`);
+        }
+        if(value.substring(0, 1) == '<') {
+          queryBuilder.comparisons.push(`endAt`);
+        }
+      });
+      
       var criteriaIndex = keys.join('_');
-      var criteriaValues = values.join('_');
+      var criteriaValues = values.join('_').replace('<', '').replace('>', '');
+      
+      // there's multiple comparisons throw
+      if(queryBuilder.comparisons.length > 1) {
+        throw new Error('Can only have one comparison in a where statement');
+        return;
+      }
+      
+      // build a query with one comparison
+      if (queryBuilder.comparisons.length === 1) {
+        // which comparison to use (<, >)
+        const comparisonMethod = queryBuilder.comparisons[0] 
+        // use the indexRef, find the criteriaIndex, order by key, 
+        // use the comparisonMethod that begins with the criteriaValues string
+        return this.indexRef.child(criteriaIndex).orderByKey()[comparisonMethod](criteriaValues);
+      }
+      
       return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues); 
     }
     
@@ -165,20 +203,17 @@ class Querybase {
     return merged;
   }
   
-  private _indexData(schema, data) {
-    var indexes = this._createIndexes(schema, data);
+  private _indexData(schema, data, key: string) {
+    const indexes = this._createIndexes(schema, data);
     const merged = this._.merge(data, indexes);
-
-    const pushRef = this.ref.push();
-    const path = this._.getPathFromRef(this.ref);
     
     var indexHash = {};
     Object.keys(indexes).forEach((index) => {
-      indexHash[`${path}_index/${index}/${this._.codeify(indexes[index])}`] = merged;
+      indexHash[`${this._path}_index/${index}/${this._.codeify(indexes[index])}/${key}`] = merged;
     });
     
     var fanoutHash = {};
-    fanoutHash[`${path}/${pushRef.key()}`] = merged;
+    fanoutHash[`${this._path}/${key}`] = merged;
     
     return this._.merge(fanoutHash, indexHash);
   }

@@ -16,18 +16,19 @@
 		var indexRef = ref.child('people_index');
 		var ageIndexRef = indexRef.child('age');
 		var ageLocationIndexRef = indexRef.child('age_location');
-		var queryRef = new Querybase(peopleRef, ['name', 'age', 'location']);
+		var queryRef = new Querybase(peopleRef, ['name', 'age', 'location', 'weight']);
+		var queryUtils = new QuerybaseUtils();
 		
 		btnSeed.addEventListener('click', function(e) {
 			peopleRef.remove();
-			addPerson('David', 27, 'SF');
-			addPerson('Shannon', 28, 'SF');
-			addPerson('Coco', 1, 'SF');
-			addPerson('Cash', 3, 'SF');
-			addPerson('George', 27, 'DEN');
-			addPerson('Bob', '27', 'SF');
-			addPerson('Molly', 6, 'SF');
-			addPerson('Mambo', 28, 'DEN');
+			addPerson('David', 27, 'SF', 125);
+			addPerson('Shannon', 28, 'SF', 115);
+			addPerson('Coco', 1, 'SF', 12);
+			addPerson('Cash', 3, 'SF', 32);
+			addPerson('George', 27, 'DEN', 150);
+			addPerson('Bob', '27', 'SF', 160);
+			addPerson('Molly', 6, 'SF', 55);
+			addPerson('Mambo', 28, 'DEN', 6);
 		});
 		
 		function listen(ref) {
@@ -36,11 +37,12 @@
 			});
 		}
 		
-		function addPerson(name, age, location) {
+		function addPerson(name, age, location, weight) {
 			queryRef.push({
 				name: name,
 				age: age,
-				location: location
+				location: location,
+				weight: weight
 			});
 		}
 		
