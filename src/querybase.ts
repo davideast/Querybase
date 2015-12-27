@@ -2,8 +2,8 @@
 
 class QuerybaseUtils {
   
-  codeify(key: string): string {
-    return key.split('').map((char) => { return char.charCodeAt(0) } ).join('');
+  codeify(key: string): number {
+    return parseInt(key.split('').map((char) => { return char.charCodeAt(0) } ).join(''), 10);
 	}
   
   isString(value): boolean {
@@ -33,6 +33,10 @@ class QuerybaseUtils {
       mergedHash[prop] = obj2[prop]; 
     }
     return mergedHash;
+  }
+  
+  keys(obj) {
+    return Object.keys(obj);
   }
   
   values(obj) {
@@ -79,7 +83,6 @@ class QuerybaseQuery {
 class Querybase {
   
   ref: Firebase;
-  indexRef: Firebase;
   schema: any;
   private _: QuerybaseUtils;
   private _path: string;
@@ -88,7 +91,6 @@ class Querybase {
     this._ = new QuerybaseUtils();
     this.ref = ref;
     this._path = this._.getPathFromRef(ref);
-    this.indexRef = this.ref.root().child(`${this._path}_index`);
     this.schema = schema;
     var indexes = this._createIndexes(schema, this._.arrayToObject(schema));
     this._warnAboutIndexOnRule(indexes);
@@ -125,7 +127,7 @@ class Querybase {
       return new QuerybaseQuery(this.ref.orderByChild(criteria));
     } 
     
-    const keys = Object.keys(criteria);
+    const keys = this._.keys(criteria);
     const values = this._.values(criteria);
     
     // multiple criteria
@@ -133,7 +135,7 @@ class Querybase {
       
       // look at values for comparisons
       keys.forEach((key) => {
-        var value = criteria[key];
+        const value = criteria[key];
         if(value.substring(0, 1) == '>') {
           queryBuilder.comparisons.push(`startAt`);
         }
@@ -142,10 +144,10 @@ class Querybase {
         }
       });
       
-      var criteriaIndex = keys.join('_');
-      var criteriaValues = values.join('_').replace('<', '').replace('>', '');
+      const criteriaIndex = keys.join('_');
+      const criteriaValues = values.join('_').replace('<', '').replace('>', '');
       
-      // there's multiple comparisons throw
+      // if there's multiple comparisons throw
       if(queryBuilder.comparisons.length > 1) {
         throw new Error('Can only have one comparison in a where statement');
         return;
@@ -155,9 +157,10 @@ class Querybase {
       if (queryBuilder.comparisons.length === 1) {
         // which comparison to use (<, >)
         const comparisonMethod = queryBuilder.comparisons[0] 
-        // use the indexRef, find the criteriaIndex, order by key, 
-        // use the comparisonMethod that begins with the criteriaValues string
-        return this.indexRef.child(criteriaIndex).orderByKey()[comparisonMethod](criteriaValues);
+        // find the criteriaIndex child
+        // use the comparisonMethod that begins with the codeified criteriaValues 
+        const codeifiedValue = this._.codeify(criteriaValues);
+        return this.ref.orderByChild(criteriaIndex)[comparisonMethod](codeifiedValue);
       }
       
       return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues); 
@@ -178,9 +181,11 @@ class Querybase {
     propCop.forEach((prop) => {
       var propString = "";
       var valueString = "";
-
+      
+      // first level keys
       indexHash[this._.createKey(mainProp, prop)] = this._.createKey(data[mainProp], data[prop]);
 
+      // create indexes for all property combinations
       propCop.forEach((subProp) => {
         propString = this._.createKey(propString, subProp);
         valueString = this._.createKey(valueString, data[subProp]);
@@ -205,24 +210,23 @@ class Querybase {
   
   private _indexData(schema, data, key: string) {
     const indexes = this._createIndexes(schema, data);
-    const merged = this._.merge(data, indexes);
+    var merged = this._.merge(data, indexes);
     
-    var indexHash = {};
-    Object.keys(indexes).forEach((index) => {
-      indexHash[`${this._path}_index/${index}/${this._.codeify(indexes[index])}/${key}`] = merged;
+    this._.keys(indexes).forEach((index) => {
+      merged[index] = this._.codeify(indexes[index]);
     });
     
     var fanoutHash = {};
     fanoutHash[`${this._path}/${key}`] = merged;
     
-    return this._.merge(fanoutHash, indexHash);
+    return fanoutHash;
   }
   
   private _warnAboutIndexOnRule(obj) {
     var indexKeys = this._.merge(obj, this._.arrayToObject(this.schema));
     var indexOnRule =  `
 "${this._.getPathFromRef(this.ref)}": {
-  ".indexOn": [${Object.keys(indexKeys).map((key) => { return `"${key}"`; }).join(", ")}]
+  ".indexOn": [${this._.keys(indexKeys).map((key) => { return `"${key}"`; }).join(", ")}]
 }`;
     console.warn(`Add this rule to improve performance of your Firebase queries: \n ${indexOnRule}`);
   }
