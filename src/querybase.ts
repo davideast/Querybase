@@ -53,6 +53,11 @@ class QuerybaseUtils {
    return function(a,b){ return a[prop].localeCompare(b[prop]); };
   }
   
+  stripKeys(obj, keyStrip = "_") {
+    var copy = Object.create(obj);
+    this.keys(copy).forEach((key) => { if (key.substr(0, 1) === keyStrip) { delete copy[key] } });
+  }
+  
 }
 
 class QuerybaseQuery {
@@ -121,8 +126,6 @@ class Querybase {
   
   where(criteria): any {
     
-    var queryBuilder = { comparisons: [] };
-    
     if (this._.isString(criteria)) {
       return new QuerybaseQuery(this.ref.orderByChild(criteria));
     } 
@@ -133,35 +136,9 @@ class Querybase {
     // multiple criteria
     if (this._.hasMultipleCriteria(keys)) {
       
-      // look at values for comparisons
-      keys.forEach((key) => {
-        const value = criteria[key];
-        if(value.substring(0, 1) == '>') {
-          queryBuilder.comparisons.push(`startAt`);
-        }
-        if(value.substring(0, 1) == '<') {
-          queryBuilder.comparisons.push(`endAt`);
-        }
-      });
-      
-      const criteriaIndex = keys.join('_');
-      const criteriaValues = values.join('_').replace('<', '').replace('>', '');
-      
-      // if there's multiple comparisons throw
-      if(queryBuilder.comparisons.length > 1) {
-        throw new Error('Can only have one comparison in a where statement');
-        return;
-      }
-      
-      // build a query with one comparison
-      if (queryBuilder.comparisons.length === 1) {
-        // which comparison to use (<, >)
-        const comparisonMethod = queryBuilder.comparisons[0] 
-        // find the criteriaIndex child
-        // use the comparisonMethod that begins with the codeified criteriaValues 
-        const codeifiedValue = this._.codeify(criteriaValues);
-        return this.ref.orderByChild(criteriaIndex)[comparisonMethod](codeifiedValue);
-      }
+      //TODO: refactor _ 
+      const criteriaIndex = "_" + keys.join('_');
+      const criteriaValues = values.join('_');
       
       return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues); 
     }
@@ -183,7 +160,7 @@ class Querybase {
       var valueString = "";
       
       // first level keys
-      indexHash[this._.createKey(mainProp, prop)] = this._.createKey(data[mainProp], data[prop]);
+      indexHash["_" + this._.createKey(mainProp, prop)] = this._.createKey(data[mainProp], data[prop]);
 
       // create indexes for all property combinations
       propCop.forEach((subProp) => {
@@ -191,7 +168,7 @@ class Querybase {
         valueString = this._.createKey(valueString, data[subProp]);
       });
       
-      indexHash[mainProp + propString] = data[mainProp] + valueString;
+      indexHash["_" + mainProp + propString] = data[mainProp] + valueString;
       
     });
 
@@ -211,11 +188,7 @@ class Querybase {
   private _indexData(schema, data, key: string) {
     const indexes = this._createIndexes(schema, data);
     var merged = this._.merge(data, indexes);
-    
-    this._.keys(indexes).forEach((index) => {
-      merged[index] = this._.codeify(indexes[index]);
-    });
-    
+        
     var fanoutHash = {};
     fanoutHash[`${this._path}/${key}`] = merged;
     
