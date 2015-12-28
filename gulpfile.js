@@ -8,6 +8,7 @@ const gutil = require('gulp-util');
 const uglify = require('gulp-uglify');
 const sourcemaps = require('gulp-sourcemaps');
 const tsify = require('tsify');
+const del = require('del');
 
 const setupBrowserify = (srcFile, outputFile) => {
   // set up the browserify instance on a task basis
@@ -26,15 +27,12 @@ const setupBrowserify = (srcFile, outputFile) => {
     .pipe(source(outputFile))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
-        // Add transformation tasks to the pipeline here.
-        .pipe(uglify())
-        .on('error', gutil.log)
+    .pipe(uglify())
+    .on('error', gutil.log)
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest('./dist/'))
     .pipe(gulp.dest('./examples/'));
 }
 
-gulp.task('default', function () {
-  setupBrowserify('./src/main.ts', 'querybase.js');
-  setupBrowserify('./src/web.ts', 'querybase-web.js');
-});
+gulp.task('clean', () => { del(['examples/*.js', 'examples/*.js.map', 'dist']); });
+gulp.task('default', ['clean'], () => { setupBrowserify('./src/web.ts', 'querybase.js'); });
