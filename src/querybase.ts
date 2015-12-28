@@ -1,133 +1,58 @@
 /// <reference path="../typings/firebase/firebase.d.ts" />
 
-class QuerybaseUtils {
-  
-  codeify(key: string): number {
-    return parseInt(key.split('').map((char) => { return char.charCodeAt(0) } ).join(''), 10);
-	}
-  
-  isString(value): boolean {
-    return typeof value === 'string' || value instanceof String;
-  }
-  
-  hasMultipleCriteria(criteriaKeys) {
-    return criteriaKeys.length > 1;
-  }
-  
-  createKey(propOne, propTwo) {
-    return `${propOne}_${propTwo}`;
-  }
-  
-  getPathFromRef(ref): string {
-    const PATH_POSITION = 3;
-    var pathArray = ref.toString().split('/');
-    return pathArray.slice(PATH_POSITION, pathArray.length).join('/');
-  }  
-  
-  merge(obj1, obj2) {
-    var mergedHash = {};
-    for (var prop in obj1) { 
-      mergedHash[prop] = obj1[prop]; 
-    }
-    for (var prop in obj2) { 
-      mergedHash[prop] = obj2[prop]; 
-    }
-    return mergedHash;
-  }
-  
-  keys(obj) {
-    return Object.keys(obj);
-  }
-  
-  values(obj) {
-    return Object.keys(obj).map(key => { return obj[key]; });
-  }
-  
-  arrayToObject(arr: any[]) {
-    var hash = {};
-    arr.forEach((item) => hash[item] = item);
-    return hash;
-  }
-  
-  sortLexicographically(prop) {
-   return function(a,b){ return a[prop].localeCompare(b[prop]); };
-  }
-  
-  stripKeys(obj, keyStrip = "_") {
-    var copy = Object.create(obj);
-    this.keys(copy).forEach((key) => { if (key.substr(0, 1) === keyStrip) { delete copy[key] } });
-  }
-  
-}
+import QuerybaseUtils from "./QuerybaseUtils";
+import QuerybaseQuery from "./QuerybaseQuery";
 
-class QuerybaseQuery {
-  query: FirebaseQuery;
+export default class Querybase {
   
-  constructor(query) {
-    this.query = query;
-  }
+  ref: () => Firebase;
+  indexOn: () => string[];
+  key: () => string;
   
-  lessThan(value) {
-    return new QuerybaseQuery(this.query.endAt(value));
-  }
-  
-  greaterThan(value) {
-    return this.query.startAt(value);
-  }
-  
-  equalTo(value) {
-    return this.query.equalTo(value);
-  }
-  
-  on(event, callback, cancel?, context?) {
-    this.query.on(event, callback, cancel, context)
-  }
-  
-}
-
-class Querybase {
-  
-  ref: Firebase;
-  schema: any;
   private _: QuerybaseUtils;
-  private _path: string;
   
-  constructor(ref: Firebase, schema: any) {
+  constructor(ref: Firebase, indexOn: string[]) {
     this._ = new QuerybaseUtils();
-    this.ref = ref;
-    this._path = this._.getPathFromRef(ref);
-    this.schema = schema;
-    var indexes = this._createIndexes(schema, this._.arrayToObject(schema));
+    this.ref = () => { return ref; }
+    this.indexOn = () => { return indexOn };
+    this.key = () => { return this.ref().key() };
+    
+    const indexes = this._createIndexes(indexOn, this._.arrayToObject(indexOn));
     this._warnAboutIndexOnRule(indexes);
   }
-
+  
   set(data) {
-    var dataWithIndex = this._indexData(this.schema, data, this.ref.key());
-    this.ref.set(dataWithIndex);
+    const dataWithIndex = this._indexData(this.indexOn(), data);
+    this.ref().set(dataWithIndex);
   }
 
   update(data) {
-    var dataWithIndex = this._indexData(this.schema, data, this.ref.key());
-    this.ref.update(dataWithIndex);
+    const dataWithIndex = this._indexData(this.indexOn(), data);
+    this.ref().update(dataWithIndex);
   }
 
   push(data) {
-    const dataWithIndex = this._indexData(this.schema, data, this.ref.push().key());
-    this.ref.parent().update(dataWithIndex);
+    if (!data) { return this.ref().push() }
+    const dataWithIndex = this._indexData(this.indexOn(), data);
+    this.ref().push(dataWithIndex);
   }
   
   remove() {
-    return this.ref.remove();
+    return this.ref().remove();
   }
   
   onDisconnect() {
-    return this.ref.onDisconnect();
+    return this.ref().onDisconnect();
+  }
+  
+  child(path, indexOn?: string[]) {
+    return new Querybase(this.ref().child(path), indexOn || this.indexOn());
   }
   
   where(criteria): any {
     
     if (this._.isString(criteria)) {
-      return new QuerybaseQuery(this.ref.orderByChild(criteria));
+      return new QuerybaseQuery(this.ref().orderByChild(criteria));
     } 
     
     const keys = this._.keys(criteria);
@@ -140,20 +65,20 @@ class Querybase {
       const criteriaIndex = "_" + keys.join('_');
       const criteriaValues = values.join('_');
       
-      return this.ref.orderByChild(criteriaIndex).equalTo(criteriaValues); 
+      return this.ref().orderByChild(criteriaIndex).equalTo(criteriaValues); 
     }
     
     // single criteria 
-    return this.ref.orderByChild(keys[0]).equalTo(values[0]);
+    return this.ref().orderByChild(keys[0]).equalTo(values[0]);
   }
   
   private _createIndexes(properties: any[], data: any, indexHash?: any) {
     // create a copy of the array to not modifiy the original properties
-    var propCop = properties.slice();
+    const propCop = properties.slice();
     // remove the first property, this ensures no redundant keys are created (age_name vs. name_age)
-    var mainProp = propCop.shift()
+    const mainProp = propCop.shift()
     // recursive check for the indexHash
-    var indexHash = indexHash || {};
+    indexHash = indexHash || {};
 
     propCop.forEach((prop) => {
       var propString = "";
@@ -179,29 +104,25 @@ class Querybase {
     return indexHash;
   }
   
-  private _addIndexToData(schema, data) {
-    var indexes = this._createIndexes(schema, data);
-    var merged = this._.merge(data, indexes);
+  private _addIndexToData(_indexOn, data) {
+    const indexes = this._createIndexes(_indexOn, data);
+    const merged = this._.merge(data, indexes);
     return merged;
   }
   
-  private _indexData(schema, data, key: string) {
-    const indexes = this._createIndexes(schema, data);
-    var merged = this._.merge(data, indexes);
-        
-    var fanoutHash = {};
-    fanoutHash[`${this._path}/${key}`] = merged;
-    
-    return fanoutHash;
+  private _indexData(_indexOn, data) {
+    const indexes = this._createIndexes(_indexOn, data);
+    const merged = this._.merge(data, indexes);
+    return merged;
   }
   
   private _warnAboutIndexOnRule(obj) {
-    var indexKeys = this._.merge(obj, this._.arrayToObject(this.schema));
-    var indexOnRule =  `
-"${this._.getPathFromRef(this.ref)}": {
-  ".indexOn": [${this._.keys(indexKeys).map((key) => { return `"${key}"`; }).join(", ")}]
+    const indexKeys = this._.merge(obj, this._.arrayToObject(this.indexOn()));
+    const _indexOnRule =  `
+"${this._.getPathFromRef(this.ref())}": {
+  "._indexOn": [${this._.keys(indexKeys).map((key) => { return `"${key}"`; }).join(", ")}]
 }`;
-    console.warn(`Add this rule to improve performance of your Firebase queries: \n ${indexOnRule}`);
+    console.warn(`Add this rule to drastically improve performance of your Firebase queries: \n ${_indexOnRule}`);
   }
 
 }

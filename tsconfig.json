@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "removeComments": false,
+        "preserveConstEnums": true,
+        "out": "../../built/local/tsc.js",
+        "sourceMap": true
+    }
+}
