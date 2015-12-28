@@ -104,12 +104,6 @@ export default class Querybase {
     return indexHash;
   }
   
-  private _addIndexToData(_indexOn, data) {
-    const indexes = this._createIndexes(_indexOn, data);
-    const merged = this._.merge(data, indexes);
-    return merged;
-  }
-  
   private _indexData(_indexOn, data) {
     const indexes = this._createIndexes(_indexOn, data);
     const merged = this._.merge(data, indexes);

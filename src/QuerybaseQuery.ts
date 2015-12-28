@@ -24,4 +24,8 @@ export default class QuerybaseQuery {
     return this.query.startAt(firstChar).endAt(`${value}\uf8ff`);
   }
   
+  between(valueOne: number, valueTwo: number) {
+    return this.query.startAt(valueOne).endAt(valueTwo);
+  }
+  
 }
