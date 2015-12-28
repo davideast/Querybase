@@ -1,6 +1,6 @@
 /// <reference path="../typings/firebase/firebase.d.ts" />
 
-export default class QuerybaseUtils {
+export class QuerybaseUtils {
   
   isString(value): boolean {
     return typeof value === 'string' || value instanceof String;
@@ -52,6 +52,15 @@ export default class QuerybaseUtils {
   stripKeys(obj, keyStrip = "_") {
     var copy = Object.create(obj);
     this.keys(copy).forEach((key) => { if (key.substr(0, 1) === keyStrip) { delete copy[key] } });
+  }
+  
+  copy(obj: Object) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
   }
   
 }

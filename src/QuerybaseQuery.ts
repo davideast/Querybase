@@ -1,6 +1,6 @@
 /// <reference path="../typings/firebase/firebase.d.ts" />
 
-export default class QuerybaseQuery {
+export class QuerybaseQuery {
   query: FirebaseQuery;
   
   constructor(query: FirebaseQuery) {

@@ -1,9 +1,10 @@
 /// <reference path="../typings/firebase/firebase.d.ts" />
 
-import QuerybaseUtils from "./QuerybaseUtils";
-import QuerybaseQuery from "./QuerybaseQuery";
+import {QuerybaseUtils} from "./QuerybaseUtils";
+import {QuerybaseQuery} from "./QuerybaseQuery";
+import {indexify} from "./QuerybaseIndex";
 
-export default class Querybase {
+export class Querybase {
   
   ref: () => Firebase;
   indexOn: () => string[];
@@ -17,23 +18,25 @@ export default class Querybase {
     this.indexOn = () => { return indexOn };
     this.key = () => { return this.ref().key() };
     
-    const indexes = this._createIndexes(indexOn, this._.arrayToObject(indexOn));
+    const indexes = indexify(indexOn, this._.arrayToObject(indexOn));
     this._warnAboutIndexOnRule(indexes);
   }
   
   set(data) {
-    const dataWithIndex = this._indexData(this.indexOn(), data);
+    const dataWithIndex = indexify(this.indexOn(), data);
     this.ref().set(dataWithIndex);
   }
 
   update(data) {
-    const dataWithIndex = this._indexData(this.indexOn(), data);
+    const dataWithIndex = indexify(this.indexOn(), data);
     this.ref().update(dataWithIndex);
   }
 
   push(data) {
     if (!data) { return this.ref().push() }
-    const dataWithIndex = this._indexData(this.indexOn(), data);
+    
+    const dataWithIndex = indexify(this.indexOn(), data);
+    
     this.ref().push(dataWithIndex);
   }
   
@@ -98,18 +101,12 @@ export default class Querybase {
     });
 
     if (propCop.length !== 0) {
-      this._createIndexes(propCop, data, indexHash);
+      indexify(propCop, data, indexHash);
     }
 
     return indexHash;
   }
-  
-  private _indexData(_indexOn, data) {
-    const indexes = this._createIndexes(_indexOn, data);
-    const merged = this._.merge(data, indexes);
-    return merged;
-  }
-  
+
   private _warnAboutIndexOnRule(obj) {
     const indexKeys = this._.merge(obj, this._.arrayToObject(this.indexOn()));
     const _indexOnRule =  `

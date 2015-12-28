@@ -1,7 +1,4 @@
-import Querybase from './Querybase';
-import QuerybaseUtils from './QuerybaseUtils';
-import QuerybaseQuery from './QuerybaseQuery';
-
-window["Querybase"] = Querybase;
-window["QuerybaseUtils"] = QuerybaseUtils;
-window["QuerybaseQuery"] = QuerybaseQuery;
+export {Querybase} from './Querybase';
+export {QuerybaseUtils} from './QuerybaseUtils';
+export {QuerybaseQuery} from './QuerybaseQuery';
+export {indexify} from './QuerybaseIndex';
