@@ -2,22 +2,18 @@
 <html>
 <head>
 	<script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
-	<script src="querybase-web.js"></script>
+	<script src="querybase.js"></script>
   <meta charset="utf-8">
-  <title>JS Bin</title>
+  <title>Querybase</title>
 </head>
 <body>
 
 	<button id="btnSeed">Seed</button>
 
 	<script>
-		var ref = new Firebase("https://flamethrow.firebaseio.com/");
+		var ref = new Firebase("https://querybase.firebaseio.com/");
 		var peopleRef = ref.child("people");
-		var indexRef = ref.child('people_index');
-		var ageIndexRef = indexRef.child('age');
-		var ageLocationIndexRef = indexRef.child('age_location');
 		var queryRef = new Querybase(peopleRef, ['name', 'age', 'location', 'weight']);
-		var queryUtils = new QuerybaseUtils();
 		
 		btnSeed.addEventListener('click', function(e) {
 			peopleRef.remove();
@@ -44,14 +40,6 @@
 				location: location,
 				weight: weight
 			});
-		}
-		
-		function numberify(string) {
-			var chars = string.split('');
-			var values = chars.map(function(char) {
-				return char.charCodeAt(0);
-			});
-			return values.join('');
 		}
 		
 	</script>

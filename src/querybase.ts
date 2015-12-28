@@ -75,38 +75,6 @@ export class Querybase {
     return this.ref().orderByChild(keys[0]).equalTo(values[0]);
   }
   
-  private _createIndexes(properties: any[], data: any, indexHash?: any) {
-    // create a copy of the array to not modifiy the original properties
-    const propCop = properties.slice();
-    // remove the first property, this ensures no redundant keys are created (age_name vs. name_age)
-    const mainProp = propCop.shift()
-    // recursive check for the indexHash
-    indexHash = indexHash || {};
-
-    propCop.forEach((prop) => {
-      var propString = "";
-      var valueString = "";
-      
-      // first level keys
-      indexHash["_" + this._.createKey(mainProp, prop)] = this._.createKey(data[mainProp], data[prop]);
-
-      // create indexes for all property combinations
-      propCop.forEach((subProp) => {
-        propString = this._.createKey(propString, subProp);
-        valueString = this._.createKey(valueString, data[subProp]);
-      });
-      
-      indexHash["_" + mainProp + propString] = data[mainProp] + valueString;
-      
-    });
-
-    if (propCop.length !== 0) {
-      indexify(propCop, data, indexHash);
-    }
-
-    return indexHash;
-  }
-
   private _warnAboutIndexOnRule(obj) {
     const indexKeys = this._.merge(obj, this._.arrayToObject(this.indexOn()));
     const _indexOnRule =  `
