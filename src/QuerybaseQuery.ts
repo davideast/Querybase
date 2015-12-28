@@ -7,16 +7,21 @@ export default class QuerybaseQuery {
     this.query = query;
   }
   
-  lessThan(value: any) {
+  lessThan(value) {
     return new QuerybaseQuery(this.query.endAt(value));
   }
   
-  greaterThan(value: any) {
+  greaterThan(value) {
     return this.query.startAt(value);
   }
   
-  equalTo(value: any) {
+  equalTo(value) {
     return this.query.equalTo(value);
+  }
+  
+  startsWith(value) {
+    const firstChar = value.substr(0, 1);
+    return this.query.startAt(firstChar).endAt(`${value}\uf8ff`);
   }
   
 }
