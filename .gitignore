@@ -2,4 +2,3 @@ dist
 node_modules
 typings
 examples/querybase.js
-examples/querybase.js.map
