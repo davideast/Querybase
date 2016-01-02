@@ -16,6 +16,9 @@
     },
     "chai/chai.d.ts": {
       "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
+    },
+    "gulp/gulp.d.ts": {
+      "commit": "fe563dff3428bac1260d1794e2c2ecf8f097535a"
     }
   }
 }
