@@ -2,3 +2,5 @@ dist
 node_modules
 typings
 examples/querybase.js
+examples/**/*.d.ts
+coverage
