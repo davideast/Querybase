@@ -13,6 +13,8 @@ const istanbul = require('gulp-istanbul');
 const rename = require("gulp-rename");
 const merge = require('merge2');
 
+const exit = () => process.exit(1);
+
 const tsBuild = (config) => {  
   config = config || {};
   const path = config.path || './src/Querybase.ts';
@@ -65,6 +67,7 @@ gulp.task('pre-test', function () {
     .pipe(istanbul.hookRequire());
 });
 
+// Use for build process, continues stream
 gulp.task('test', ['typings', 'pre-test'], () => {
   return gulp
    .src('./tests/unit/**.spec.js', { read: false })
@@ -72,10 +75,13 @@ gulp.task('test', ['typings', 'pre-test'], () => {
    .pipe(istanbul.writeReports());
 });
 
+// Call from CLI only, exits after tests run
+gulp.task('tests', ['test'], exit);
+
 gulp.task('typings', () => {
   return gulp
     .src('./tests/**/*.d.ts')
     .pipe(gulp.dest('./typings'));
 });
 
-gulp.task('default', () => runSequence('clean', 'typescript', 'min', 'test'));
+gulp.task('default', () => runSequence('clean', 'typescript', 'min', 'test', exit));
