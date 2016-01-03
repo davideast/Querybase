@@ -1,6 +1,6 @@
 dist
 node_modules
-typings
+typings/**
 examples/querybase.js
 examples/**/*.d.ts
 coverage

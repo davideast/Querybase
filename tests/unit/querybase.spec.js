@@ -3,6 +3,8 @@
 const FirebaseServer = require('firebase-server');
 const Firebase = require('firebase');
 const Querybase = require('../../dist/querybase');
+const helpers = require('../helpers');
+const firebaseServer = require('../firebaseServer');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
 const assert = require('assert');
 const chai = require('chai');
@@ -11,20 +13,7 @@ const expect = chai.expect;
 
 describe('Querybase', () => {
   
-  const server = new FirebaseServer(5000, 'test.firebaseio.com', {
-    people: {
-      "0": {
-        height: 60,
-        color: 'green',
-        weight: 120
-      },
-      "1": {
-        height: 70,
-        color: 'red',
-        weight: 190
-      }
-    }
-  });
+  const server = firebaseServer();
 
   const ref = new Firebase('ws://test.firebaseio.com:5000');
   
@@ -42,7 +31,7 @@ describe('Querybase', () => {
     
     it('should return a Firebase query for an object with a single criteria', () => {
       const query = queryRef.where({ color: 'green' });
-      expect(query.on).to.be.a('Function');
+      assert.equal(true, helpers.isFirebaseRef(query));
     });
     
   });

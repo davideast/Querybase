@@ -57,17 +57,25 @@ gulp.task('min', () => {
 });
 
 gulp.task('pre-test', function () {
-  return gulp.src(['./dist/querybase.js'])
+  return gulp
+    .src(['./dist/querybase.js'])
     // Covering files
     .pipe(istanbul())
     // Force `require` to return covered files
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', () => {
-  return gulp.src('./tests/unit/**.spec.js', { read: false })
+gulp.task('test', ['typings', 'pre-test'], () => {
+  return gulp
+   .src('./tests/unit/**.spec.js', { read: false })
 	 .pipe(mocha({ reporter: 'spec' }))
    .pipe(istanbul.writeReports());
 });
 
-gulp.task('default', () => runSequence('clean', 'typescript', 'min', 'pre-test', 'test'));
+gulp.task('typings', () => {
+  return gulp
+    .src('./tests/**/*.d.ts')
+    .pipe(gulp.dest('./typings'));
+});
+
+gulp.task('default', () => runSequence('clean', 'typescript', 'min', 'test'));
