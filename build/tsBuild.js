@@ -20,7 +20,7 @@ const tsBuild = () => {
 	  }));
     
 
-    merge([
+    return merge([
         
       // querybase.d.ts
 		  tsResult.dts

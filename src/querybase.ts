@@ -208,8 +208,12 @@ if (typeof module != 'undefined') {
   module.exports.QuerybaseUtils = _;
   module.exports.QuerybaseQuery = QuerybaseQuery;
 } else {
+  /* istanbul ignore next */
   window["Querybase"] = Querybase;
-  window["Querybase"]["indexify"] = indexify; 
+  /* istanbul ignore next */
+  window["Querybase"]["indexify"] = indexify;
+  /* istanbul ignore next */ 
   window["Querybase"]["QuerybaseUtils"] = _;
+  /* istanbul ignore next */
   window["Querybase"]["QuerybaseQuery"] = QuerybaseQuery;  
 }

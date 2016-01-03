@@ -38,8 +38,25 @@ gulp.task('test', ['typings', 'pre-test'], () => {
    .pipe(istanbul.writeReports());
 });
 
-// Call from CLI only, exits after tests run
-gulp.task('tests', ['test'], exit);
+gulp.task('coverageServer', () => {
+  connect.server({
+    root: 'coverage',
+    port: 8001,
+    livereload: true
+  });
+});
+
+gulp.task('html', function () {
+  gulp.src('./coverage/*.html')
+    .pipe(connect.reload());
+});
+ 
+gulp.task('watch', function () {
+  gulp.watch(['./coverage/*.html'], ['html']);
+});
+
+
+gulp.task('coverage', ['watch', 'coverageServer']);
 
 gulp.task('typings', () => {
   return gulp
