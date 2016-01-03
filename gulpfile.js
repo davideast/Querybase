@@ -3,13 +3,12 @@
 'use strict';
 
 const gulp = require('gulp');
-const uglify = require('gulp-uglify');
 const del = require('del');
 const mocha = require('gulp-mocha');
 const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
-const rename = require("gulp-rename");
 const tsBuild = require('./build/tsBuild');
+const connect = require('gulp-connect');
 
 const exit = () => process.exit(1);
 
@@ -18,14 +17,7 @@ gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/i
 gulp.task('typescript', ['clean'], () => {
 	return tsBuild({ declaration: true })
 		.pipe(gulp.dest('./dist'))
-    .pipe(gulp.dest('./examples'));  
-});
-
-gulp.task('min', () => {
-  return tsBuild()
-    .pipe(uglify())
-    .pipe(rename('quertbase.min.js'))
-    .pipe(gulp.dest('./dist'));
+    .pipe(gulp.dest('./examples'))
 });
 
 gulp.task('pre-test', function () {
@@ -54,4 +46,4 @@ gulp.task('typings', () => {
     .pipe(gulp.dest('./typings'));
 });
 
-gulp.task('default', () => runSequence('clean', 'typescript', 'min', 'test', exit));
+gulp.task('default', () => runSequence('clean', 'typescript', 'test', exit));
