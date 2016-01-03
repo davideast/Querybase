@@ -20,7 +20,7 @@ const tsBuild = () => {
 	  }));
     
 
-    return merge([
+    merge([
         
       // querybase.d.ts
 		  tsResult.dts
@@ -31,17 +31,10 @@ const tsBuild = () => {
 		  tsResult.js
         .pipe(gulp.dest('./dist'))
         .pipe(sourcemaps.write()),
-        
-      // querybase.min.js
-      tsResult.js
-        .pipe(uglify())
-        .pipe(rename('querybase.min.js'))
-        .pipe(gulp.dest('./dist'))
           
 	  ]); 
     
     
-    return tsResult.pipe(sourcemaps.write());
 };
 
 module.exports = tsBuild;

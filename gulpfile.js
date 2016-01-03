@@ -9,6 +9,7 @@ const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
 const tsBuild = require('./build/tsBuild');
 const connect = require('gulp-connect');
+const open = require('gulp-open');
 
 const exit = () => process.exit(1);
 
