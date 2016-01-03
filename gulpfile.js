@@ -4,44 +4,14 @@
 
 const gulp = require('gulp');
 const uglify = require('gulp-uglify');
-const sourcemaps = require('gulp-sourcemaps');
 const del = require('del');
-const ts = require('gulp-typescript');
 const mocha = require('gulp-mocha');
 const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
 const rename = require("gulp-rename");
-const merge = require('merge2');
+const tsBuild = require('./build/tsBuild');
 
 const exit = () => process.exit(1);
-
-const tsBuild = (config) => {  
-  config = config || {};
-  const path = config.path || './src/Querybase.ts';
-  const declaration = config.declaration || false
-  const tsResult = gulp.src(path)
-    .pipe(sourcemaps.init())
-		.pipe(ts({
-   		sortOutput: true,
-			module: 'commonjs',
-			target: 'es5',
-      out: 'querybase.js',
-      declaration: declaration
-	  }));
-    
-    if (declaration) {
-      return merge([
-		    tsResult.dts
-          .pipe(gulp.dest('./dist'))
-          .pipe(gulp.dest('./typings/querybase')),
-		    tsResult.js
-          .pipe(gulp.dest('./dist'))
-          .pipe(sourcemaps.write())
-	    ]); 
-    } 
-    
-    return tsResult.pipe(sourcemaps.write());
-};
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
 
