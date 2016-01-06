@@ -87,11 +87,14 @@ class Querybase {
   }
 
   push(data) {
-    if (!data) { return this.ref().push() }
+    let firebaseRef = null;
+    // TODO: return new Querybase not a basic ref
+    if (!data) { firebaseRef = this.ref().push() }
     
     const dataWithIndex = indexify(this.indexOn(), data);
     
-    this.ref().push(dataWithIndex);
+    firebaseRef = this.ref().push(dataWithIndex);
+    return new Querybase(firebaseRef, this.indexOn());
   }
   
   remove() {

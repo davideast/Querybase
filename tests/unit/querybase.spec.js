@@ -6,6 +6,7 @@ const Querybase = require('../../dist/querybase');
 const helpers = require('../helpers');
 const firebaseServer = require('../firebaseServer');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
+const indexify = QuerybaseQuery.indexify;
 const assert = require('assert');
 const chai = require('chai');
 const sinon = require('sinon');
@@ -40,7 +41,7 @@ describe('Querybase', () => {
         expect(queryRef.ref().set.calledOnce).to.be.ok;
         queryRef.ref().set.restore();
     });
-    
+
   });
   
   describe('where', () => {
