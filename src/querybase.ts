@@ -167,7 +167,7 @@ class QuerybaseQuery {
     return this.query.startAt(firstChar).endAt(`${value}\uf8ff`);
   }
   
-  between(valueOne: number, valueTwo: number) {
+  between(valueOne: any, valueTwo: any) {
     return this.query.startAt(valueOne).endAt(valueTwo);
   }
   
