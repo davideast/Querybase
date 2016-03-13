@@ -10,6 +10,7 @@ const istanbul = require('gulp-istanbul');
 const tsBuild = require('./build/tsBuild');
 const connect = require('gulp-connect');
 const open = require('gulp-open');
+const firebaseTestServer = require('./tests/firebaseServer');
 
 const exit = () => process.exit(1);
 
@@ -31,11 +32,15 @@ gulp.task('pre-test', function () {
 });
 
 // Use for build process, continues stream
-gulp.task('test', ['typings', 'pre-test'], () => {
+gulp.task('test', ['firebaseServer', 'typings', 'pre-test'], () => {
   return gulp
    .src('./tests/unit/**.spec.js', { read: false })
 	 .pipe(mocha({ reporter: 'spec' }))
    .pipe(istanbul.writeReports());
+});
+
+gulp.task('firebaseServer', () => {
+  firebaseTestServer();
 });
 
 gulp.task('coverageServer', () => {

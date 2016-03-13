@@ -3,11 +3,16 @@
 const _ = require('../../dist/querybase').QuerybaseUtils;
 const assert = require('assert');
 const chai = require('chai');
+const Firebase = require('firebase');
 const should = chai.should();
 const expect = chai.expect;
 
+function compare(obj1, obj2) {
+  return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
 
 describe('QuerybaseUtils', () => {
+  
   
   it('should exist', () => { expect(_).to.exist; })
   
@@ -21,6 +26,67 @@ describe('QuerybaseUtils', () => {
     it('should return false for a anything else', () => {
       const result = _.isString(22);
       assert.equal(result, false);
+    });
+    
+  });
+  
+  describe('isCommonJS', () => {
+    it('should return true, because this runtime is Node', () => {
+      assert.equal(_.isCommonJS(), true);
+    });
+  });
+  
+  describe('hasMultipleCriteria', () => {
+    
+    it('should return true for more than one criteria key', () => {
+      const criteriaKeys = ['age', 'location'];
+      const hasMultiple = _.hasMultipleCriteria(criteriaKeys);
+      assert.equal(hasMultiple, true);
+    });
+    
+    it('should return false for one criteria key', () => {
+      const criteriaKeys = ['age'];
+      const hasMultiple = _.hasMultipleCriteria(criteriaKeys);
+      assert.equal(hasMultiple, false);
+    });
+    
+    it('should return false zero criteria keys', () => {
+      const criteriaKeys = [];
+      const hasMultiple = _.hasMultipleCriteria(criteriaKeys);
+      assert.equal(hasMultiple, false);
+    });
+    
+  });
+  
+  describe('getPathFromRef', () => {
+    
+    it('should find the path from the Firebase reference', () => {
+      const ref = new Firebase('ws://test.firebaseio.com:5000/items');
+      assert.equal(_.getPathFromRef(ref), 'items');
+    });
+    
+    it('should find a two deep path from the Firebase reference', () => {
+      const ref = new Firebase('ws://test.firebaseio.com:5000/items/1');
+      assert.equal(_.getPathFromRef(ref), 'items/1');
+    });
+    
+    it('should find a three deep path from the Firebase reference', () => {
+      const ref = new Firebase('ws://test.firebaseio.com:5000/items/1/2');
+      assert.equal(_.getPathFromRef(ref), 'items/1/2');
+    });
+        
+  });
+  
+  describe('merge', () => {
+    
+    it('should merge two objects', () => {
+      
+      const obj1 = { key: 'key' };
+      const obj2 = { key2: 'key2', key3: 'key3'};
+      const merged = _.merge(obj1, obj2);
+      const expected = { key: 'key', key2: 'key2', key3: 'key3' };
+      assert.equal(compare(expected, merged), true);
+      
     });
     
   });
