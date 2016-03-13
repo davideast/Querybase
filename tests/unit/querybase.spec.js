@@ -13,16 +13,6 @@ const expect = chai.expect;
 // disable warnings
 console.warn = () => {};
 
-function isQuerybaseQuery(query) {
-  const type = Object.getPrototypeOf(query);
-  return type === QuerybaseQuery.prototype;
-}
-
-function isQuerybaseRef(ref) {
-  const type = Object.getPrototypeOf(ref);
-  return type === Querybase.prototype;  
-}
-
 describe('Querybase', () => {
 
   const ref = new Firebase('ws://test.firebaseio.com:5000/items');
@@ -35,6 +25,18 @@ describe('Querybase', () => {
   };
   
   it('should exist', () => { expect(Querybase).to.exist; });
+  
+  describe('constructor', () => {
+
+    it('should throw if no Firebase ref is provided', () => {
+      // TODO: Create exceptions
+    });
+    
+    it('should throw if no indexes are provided', () => {
+      // TODO: Create exceptions
+    });
+    
+  });
   
   describe('set', () => {
     
@@ -152,22 +154,19 @@ describe('Querybase', () => {
     });
     
     it('should return a Querybase ref', () => {
-      const childQueryRef = queryRef.child('some/path');
-      assert.equal(isQuerybaseRef(childQueryRef), true);
+      const childQueryRef = queryRef.child('some/path', ['name', 'color']);
+      assert.equal(helpers.isQuerybaseRef(childQueryRef), true);
     });
-    
-    it('should return a child Querybase ref with parent indexes', () => {
-      const childRef = queryRef.child('some/path')
-      // TODO: array comparison
-      assert.equal(childRef.indexOn()[0], 'age');
-      assert.equal(childRef.indexOn()[1], 'location');
-    });    
     
     it('should return a child Querybase ref with new indexes', () => {
       const childRef = queryRef.child('some/path', ['name', 'color'])
       // TODO: array comparison
       assert.equal(childRef.indexOn()[0], 'name');
       assert.equal(childRef.indexOn()[1], 'color');
+    });
+    
+    it('should throw if no indexes are provided', () => {
+      // TODO: Create exceptions
     });
       
   });    
@@ -180,7 +179,7 @@ describe('Querybase', () => {
     
     it('should return a QuerybaseQuery for a single criteria', () => {
       const query = queryRef.where('green');
-      assert.equal(isQuerybaseQuery(query), true);
+      assert.equal(helpers.isQuerybaseQuery(query), true);
     });
     
     it('should return a Firebase query for an object with a single criteria', () => {
@@ -202,7 +201,7 @@ describe('Querybase', () => {
     
   });
   
-  describe('createQueryPredicate', () => {
+  describe('_createQueryPredicate', () => {
     
     let queryRef;
     beforeEach(() => queryRef = new Querybase(ref, indexes));
@@ -215,7 +214,7 @@ describe('Querybase', () => {
         predicate: 'color',
         value: 'Blue'
       };
-      const predicate = queryRef.createQueryPredicate({ color: 'Blue' });
+      const predicate = queryRef._createQueryPredicate({ color: 'Blue' });
       
       assert.equal(JSON.stringify(expectedPredicate), JSON.stringify(predicate));
       
@@ -230,21 +229,21 @@ describe('Querybase', () => {
         value: 'querybase_Qmx1ZV82Nw=='
       };
       
-      const predicate = queryRef.createQueryPredicate({ color: 'Blue', height: 67 });
+      const predicate = queryRef._createQueryPredicate({ color: 'Blue', height: 67 });
       assert.equal(JSON.stringify(expectedPredicate), JSON.stringify(predicate));
       
     });
     
   });
   
-  describe('createCompositeIndex', () => {
+  describe('_createCompositeIndex', () => {
     
     let queryRef;      
     beforeEach(() => queryRef = new Querybase(ref, indexes));
     
     it('should create a composite index', () => {
 
-      const compositeIndex = queryRef.createCompositeIndex(indexes, {
+      const compositeIndex = queryRef._createCompositeIndex(indexes, {
         color: 'Blue',
         height: 67,
         weight: 130
@@ -254,12 +253,19 @@ describe('Querybase', () => {
       
     });
     
+    it('should throw if no indexes are provided', () => {
+      // TODO: Create exceptions
+    });
+    
+    it('should throw if no data is provided', () => {
+      // TODO: Create exceptions
+    });
+    
   });
   
-  describe('encodeCompositeIndex', () => {
+  describe('_encodeCompositeIndex', () => {
     
     let queryRef;
-      
     beforeEach(() => queryRef = new Querybase(ref, indexes));
     
     it('should encode an object', () => {
@@ -269,10 +275,14 @@ describe('Querybase', () => {
         'querybase_Y29sb3JfaGVpZ2h0X3dlaWdodA==': 'querybase_Qmx1ZV82N18xMzA=',
         'querybase_Y29sb3Jfd2VpZ2h0': 'querybase_Qmx1ZV8xMzA=',
         'querybase_aGVpZ2h0X3dlaWdodA==': 'querybase_NjdfMTMw' 
-      }
+      };
       
-      const encodedIndex = queryRef.encodeCompositeIndex(expectedIndex);
+      const encodedIndex = queryRef._encodeCompositeIndex(expectedIndex);
       assert.equal(JSON.stringify(expectedEncodedIndex), JSON.stringify(encodedIndex));
+    });
+    
+    it('should throw if no object is provided', () => {
+      // TODO: Create exceptions
     });
     
   });
