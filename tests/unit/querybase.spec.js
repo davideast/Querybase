@@ -24,6 +24,9 @@ describe('Querybase', () => {
     'height_weight': '67_130'
   };
   
+  let queryRef;
+  beforeEach(() => queryRef = new Querybase(ref, indexes));
+  
   it('should exist', () => { expect(Querybase).to.exist; });
   
   describe('constructor', () => {
@@ -39,10 +42,7 @@ describe('Querybase', () => {
   });
   
   describe('set', () => {
-    
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, ['age', 'location']));
-    
+
     it('should call the Firebase set function', () => {
       sinon.spy(queryRef.ref(), 'set');
         
@@ -65,9 +65,6 @@ describe('Querybase', () => {
   
   describe('update', () => {
     
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, ['age', 'location']));
-    
     it('should call the Firebase update function', () => {
       sinon.spy(queryRef.ref(), 'update');
         
@@ -89,9 +86,7 @@ describe('Querybase', () => {
   });
   
   describe('push', () => {
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, ['age', 'location']));
-    
+
     it('should call the Firebase push function', () => {
       sinon.spy(queryRef.ref(), 'push');
         
@@ -131,9 +126,7 @@ describe('Querybase', () => {
   });
 
   describe('remove', () => {
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, ['age', 'location']));
-    
+
     it('should call the Firebase remove function', () => {
       sinon.spy(queryRef.ref(), 'remove');
       queryRef.remove({ age: 27, location: 'SF' });
@@ -143,9 +136,7 @@ describe('Querybase', () => {
   });    
   
   describe('child', () => {
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, ['age', 'location']));
-    
+
     it('should call the Firebase child function', () => {
       sinon.spy(queryRef.ref(), 'child');
       queryRef.child('some/path');
@@ -173,10 +164,6 @@ describe('Querybase', () => {
   
   describe('where', () => {
     
-    let queryRef;
-    
-    beforeEach(() => queryRef = new Querybase(ref, indexes));
-    
     it('should return a QuerybaseQuery for a single criteria', () => {
       const query = queryRef.where('green');
       assert.equal(helpers.isQuerybaseQuery(query), true);
@@ -202,10 +189,7 @@ describe('Querybase', () => {
   });
   
   describe('_createQueryPredicate', () => {
-    
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, indexes));
-    
+
     // not encoded
     // { color: 'Blue' }
     it('should create a QueryPredicate for one criteria', () => {
@@ -238,9 +222,6 @@ describe('Querybase', () => {
   
   describe('_createCompositeIndex', () => {
     
-    let queryRef;      
-    beforeEach(() => queryRef = new Querybase(ref, indexes));
-    
     it('should create a composite index', () => {
 
       const compositeIndex = queryRef._createCompositeIndex(indexes, {
@@ -265,9 +246,6 @@ describe('Querybase', () => {
   
   describe('_encodeCompositeIndex', () => {
     
-    let queryRef;
-    beforeEach(() => queryRef = new Querybase(ref, indexes));
-    
     it('should encode an object', () => {
       
       const expectedEncodedIndex = { 
@@ -285,6 +263,45 @@ describe('Querybase', () => {
       // TODO: Create exceptions
     });
     
+  });
+  
+  describe('_createChildOrderedQuery', () => {
+    
+    it('should call the Firebase orderByChild function', () => {
+      sinon.spy(queryRef.ref(), 'orderByChild');
+      queryRef._createChildOrderedQuery('age');
+      expect(queryRef.ref().orderByChild.calledOnce).to.be.ok;
+      queryRef.ref().orderByChild.restore();
+    });
+    
+  });
+
+  describe('_createEqualToQuery', () => {
+    
+    it('should call the Firebase orderByChild function', () => {
+      sinon.spy(queryRef.ref(), 'orderByChild');
+      queryRef._createEqualToQuery({ predicate: 'age_name', value: '27_David' });
+      expect(queryRef.ref().orderByChild.calledOnce).to.be.ok;
+      queryRef.ref().orderByChild.restore();
+    });
+    
+  });
+  
+  describe('indexify', () => {
+    // _createCompositeIndex
+    // it('should call the _createCompositeIndex', () => {
+    //   sinon.spy(queryRef, '_createCompositeIndex');
+    //   queryRef.indexify({ age: '27', name: 'David' });
+    //   expect(queryRef._createCompositeIndex.calledOnce).to.be.ok;
+    //   queryRef._createCompositeIndex.restore();
+    // });
+    // _encodeCompositeIndex
+    it('should call the _encodeCompositeIndex', () => {
+      sinon.spy(queryRef, '_encodeCompositeIndex');
+      queryRef.indexify({ age: '27', name: 'David' });
+      expect(queryRef._encodeCompositeIndex.calledOnce).to.be.ok;
+      queryRef._encodeCompositeIndex.restore();
+    });    
   });
   
 });

@@ -307,6 +307,24 @@ class Querybase {
   }
 
   /**
+   * Creates an orderByChild() FirebaseQuery from a string criteria.
+   * @param {string} stringCriteria
+   * @return {QuerybaseQuery}
+   */  
+  private _createChildOrderedQuery(stringCriteria: string): QuerybaseQuery {
+    return new QuerybaseQuery(this.ref().orderByChild(stringCriteria));
+  }
+
+  /**
+   * Creates an equalTo() FirebaseQuery from a QueryPredicate.
+   * @param {Object} criteria
+   * @return {FirebaseRef}
+   */
+  private _createEqualToQuery(criteria: QueryPredicate): FirebaseQuery {
+    return this.ref().orderByChild(criteria.predicate).equalTo(criteria.value);
+  }
+  
+  /**
    * Find a set of records by a set of criteria or a string property. 
    * Works with equivalency only.
    * @param {Object} criteria
@@ -329,21 +347,12 @@ class Querybase {
   where(criteria): any {
     // for strings create a QuerybaseQuery for advanced querying
     if (_.isString(criteria)) {
-      return new QuerybaseQuery(this.ref().orderByChild(criteria));
+      return this._createChildOrderedQuery(criteria);
     }
 
     // Create the query predicate to build the Firebase Query
     const queryPredicate = this._createQueryPredicate(criteria);
-    return this.createEqualToQuery(queryPredicate);
-  }
-
-  /**
-   * Creates an equalTo() FirebaseQuery from a QueryPredicate.
-   * @param {Object} criteria
-   * @return {FirebaseRef}
-   */
-  createEqualToQuery(criteria: QueryPredicate): FirebaseQuery {
-    return this.ref().orderByChild(criteria.predicate).equalTo(criteria.value);
+    return this._createEqualToQuery(queryPredicate);
   }
 
   /**
