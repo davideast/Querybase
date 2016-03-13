@@ -47,18 +47,8 @@ function isFirebaseQuery(query) {
   return isFunction(query.startAt);
 }
 
-/**
- * Stringifies two objects and compares them as values
- * @param {string} obj1 First object to compare
- * @param {string} obj2 Second object to compare
- */
-function compareObjects(obj1, obj2) {
-  return JSON.stringify(obj1) === JSON.stringify(obj2);
-}
-
 module.exports.isFunction = isFunction;
 module.exports.isFirebaseRef = isFirebaseRef;
 module.exports.isFirebaseQuery = isFirebaseQuery;
 module.exports.isQuerybaseRef = isQuerybaseRef;
 module.exports.isQuerybaseQuery = isQuerybaseQuery;
-module.exports.compareObjects = compareObjects;

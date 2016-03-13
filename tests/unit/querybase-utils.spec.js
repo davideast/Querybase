@@ -82,7 +82,7 @@ describe('QuerybaseUtils', () => {
       const obj2 = { key2: 'key2', key3: 'key3'};
       const merged = _.merge(obj1, obj2);
       const expected = { key: 'key', key2: 'key2', key3: 'key3' };
-      assert.equal(helpers.compareObjects(expected, merged), true);
+      assert.deepEqual(expected, merged);
       
     });
     

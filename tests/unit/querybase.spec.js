@@ -32,12 +32,14 @@ describe('Querybase', () => {
   describe('constructor', () => {
 
     it('should throw if no Firebase ref is provided', () => {
-      const badQuerybase = new Querybase();
+      const errorWrapper = () => new Querybase();
+      expect(errorWrapper).to.throw(Error);
     });
     
     it('should throw if no indexes are provided', () => {
-      // TODO: Create exceptions
-      const badQuerybase = new Querybase(ref);
+      
+      const errorWrapper = () => new Querybase(ref);
+      expect(errorWrapper).to.throw(Error);
     });
     
   });
@@ -140,7 +142,7 @@ describe('Querybase', () => {
 
     it('should call the Firebase child function', () => {
       sinon.spy(queryRef.ref(), 'child');
-      queryRef.child('some/path');
+      queryRef.child('some/path', ['name', 'color']);
       expect(queryRef.ref().child.calledOnce).to.be.ok;
       queryRef.ref().child.restore();
     });
@@ -158,7 +160,8 @@ describe('Querybase', () => {
     });
     
     it('should throw if no indexes are provided', () => {
-      // TODO: Create exceptions
+      const errorWrapper = () => queryRef.child('someKey');
+      expect(errorWrapper).to.throw(Error);
     });
       
   });    
@@ -201,7 +204,7 @@ describe('Querybase', () => {
       };
       const predicate = queryRef._createQueryPredicate({ color: 'Blue' });
       
-      assert.equal(JSON.stringify(expectedPredicate), JSON.stringify(predicate));
+      assert.deepEqual(expectedPredicate, predicate);
       
     });
     
@@ -215,7 +218,7 @@ describe('Querybase', () => {
       };
       
       const predicate = queryRef._createQueryPredicate({ color: 'Blue', height: 67 });
-      assert.equal(JSON.stringify(expectedPredicate), JSON.stringify(predicate));
+      assert.deepEqual(expectedPredicate, predicate);
       
     });
     
@@ -231,7 +234,7 @@ describe('Querybase', () => {
         weight: 130
       });
       
-      assert.equal(JSON.stringify(compositeIndex), JSON.stringify(expectedIndex));
+      assert.deepEqual(compositeIndex, expectedIndex);
       
     });
     
@@ -257,7 +260,7 @@ describe('Querybase', () => {
       };
       
       const encodedIndex = queryRef._encodeCompositeIndex(expectedIndex);
-      assert.equal(JSON.stringify(expectedEncodedIndex), JSON.stringify(encodedIndex));
+      assert.deepEqual(expectedEncodedIndex, encodedIndex);
     });
     
     it('should throw if no object is provided', () => {
