@@ -32,11 +32,12 @@ describe('Querybase', () => {
   describe('constructor', () => {
 
     it('should throw if no Firebase ref is provided', () => {
-      // TODO: Create exceptions
+      const badQuerybase = new Querybase();
     });
     
     it('should throw if no indexes are provided', () => {
       // TODO: Create exceptions
+      const badQuerybase = new Querybase(ref);
     });
     
   });

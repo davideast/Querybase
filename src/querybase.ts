@@ -200,11 +200,38 @@ class Querybase {
    * for the read-only properties
    */
   constructor(ref: Firebase, indexOn: string[]) {
+    
+    // Check for constructor params and throw if not provided
+    this._assertFirebaseRef(ref);
+    this._assertIndexes(indexOn);
+    
     this.ref = () => ref;
     this.indexOn = () => indexOn;
     /* istanbul ignore next */
     this.key = () => this.ref().key();
     this.encodedKeys = () => this.encodeKeys(this.indexOn());
+  }
+
+  /**
+   * Check for a Firebase reference. Throw an exception if not provided.
+   * @parameter {Firebase}
+   * @return {void}
+   */  
+  private _assertFirebaseRef(ref) {
+    if (ref === null || ref === undefined || !ref.on) {
+      throw new Error(`No Firebase Reference provided in the Querybase constructor.`);
+    }
+  }
+
+  /**
+   * Check for indexes. Throw and exception if not provided.
+   * @param {string[]} indexes
+   * @return {void}
+   */    
+  private _assertIndexes(indexes) {
+    if (indexes === null || indexes === undefined) {
+      throw new Error(`No indexes provided in the Querybase constructor. Querybase uses the indexOn() getter to create the composite queries for the where() method.`);
+    }
   }
 
   /**
