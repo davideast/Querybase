@@ -37,7 +37,6 @@ describe('Querybase', () => {
     });
     
     it('should throw if no indexes are provided', () => {
-      
       const errorWrapper = () => new Querybase(ref);
       expect(errorWrapper).to.throw(Error);
     });
@@ -239,13 +238,25 @@ describe('Querybase', () => {
     });
     
     it('should throw if no indexes are provided', () => {
-      // TODO: Create exceptions
+      const errorWrapper = () => queryRef._createCompositeIndex();
+      expect(errorWrapper).to.throw(Error);
     });
     
     it('should throw if no data is provided', () => {
-      // TODO: Create exceptions
+      const errorWrapper = () => queryRef._createCompositeIndex(['name', 'age']);
+      expect(errorWrapper).to.throw(Error);
+    });
+
+    it('should throw if an empty array is provided', () => {
+      const errorWrapper = () => queryRef._createCompositeIndex([]);
+      expect(errorWrapper).to.throw(Error);
     });
     
+    it('should throw if an empty array is provided', () => {
+      const what = queryRef._createCompositeIndex(['name', 'age'], {});
+      console.log(what);
+    });    
+        
   });
   
   describe('_encodeCompositeIndex', () => {
@@ -263,9 +274,15 @@ describe('Querybase', () => {
       assert.deepEqual(expectedEncodedIndex, encodedIndex);
     });
     
-    it('should throw if no object is provided', () => {
-      // TODO: Create exceptions
+    it('should throw if no parameter is provided', () => {
+      const errorWrapper = () => queryRef._encodeCompositeIndex();
+      expect(errorWrapper).to.throw(Error);
     });
+    
+    it('should throw if a non object is provided', () => {
+      const errorWrapper = () => queryRef._encodeCompositeIndex(4);
+      expect(errorWrapper).to.throw(Error);
+    });    
     
   });
   

@@ -17,6 +17,7 @@ interface QueryPredicate {
 interface QuerybaseUtils {
   isCommonJS(): boolean;
   isString(value): boolean;
+  isObject(value): boolean;
   hasMultipleCriteria(criteriaKeys: string[]): boolean;
   createKey(propOne, propTwo): string;
   getPathFromRef(ref): string;
@@ -45,7 +46,16 @@ const _: QuerybaseUtils = {
   isString(value): boolean {
     return typeof value === 'string' || value instanceof String;
   },
-
+  
+  /**
+   * Detects whether a value is an object
+   * @param {any} value The possible object
+   * @return {boolean}
+   */
+  isObject(value): boolean {
+    return value !== null && typeof value === 'object';
+  },
+  
   /**
    * Detects whether a string array has more than one key
    * @param {string[]} criteriaKeys The array of keys
@@ -404,6 +414,19 @@ class Querybase {
    *  }
    */
   private _createCompositeIndex(indexes: any[], data: Object, indexHash?: Object) {
+    
+    if(!Array.isArray(indexes)) {
+      throw new Error(`_createCompositeIndex expects an array for the first parameter: found ${indexes.toString()}`)
+    }
+    
+    if(indexes.length === 0) {
+      throw new Error(`_createCompositeIndex expect an array with multiple elements for the first parameter. Found an array with length of ${indexes.length}`);
+    }
+    
+    if(!_.isObject(data)) {
+      throw new Error(`_createCompositeIndex expects an object for the second parameter: found ${data.toString()}`);
+    }
+    
     // create a copy of the array to not modifiy the original properties
     const propCop = indexes.slice();
     // remove the first property, this ensures no 
@@ -450,6 +473,9 @@ class Querybase {
    * @return {Object}
    */
   private _encodeCompositeIndex(indexWithData: Object) {
+    if(!_.isObject(indexWithData)) {
+      throw new Error(`_encodeCompositeIndex expects an object: found ${indexWithData.toString()}`);
+    }
     const values = _.values(indexWithData);
     const keys = _.keys(indexWithData);
     const encodedValues = this.encodeKeys(values);
