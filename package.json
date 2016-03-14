@@ -4,7 +4,8 @@
   "description": "Bringing the where statement to Firebase",
   "main": "/dist/querybase.js",
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "test": "gulp test"
   },
   "keywords": [
     "Firebase"
