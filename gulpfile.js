@@ -12,7 +12,7 @@ const connect = require('gulp-connect');
 const open = require('gulp-open');
 const firebaseTestServer = require('./tests/firebaseServer');
 
-const exit = () => process.exit(1);
+const exit = () => process.exit(0);
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
 
