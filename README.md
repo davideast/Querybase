@@ -3,6 +3,8 @@
   <p align="center">Bringing the <code>.where()</code> statement to Firebase</p>
 </p>
 
+[![Build Status](https://travis-ci.org/davideast/Querybase.svg?branch=master)](https://travis-ci.org/davideast/Querybase)
+
 ## What is Querybase?
 
 - **.where()** - Find records by multiple fields.
