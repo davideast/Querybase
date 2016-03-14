@@ -60,13 +60,15 @@ gulp.task('watch', function () {
   gulp.watch(['./coverage/*.html'], ['html']);
 });
 
-
+// Create code coverage
 gulp.task('coverage', ['watch', 'coverageServer']);
 
+// Generate typings
 gulp.task('typings', () => {
   return gulp
     .src('./tests/**/*.d.ts')
     .pipe(gulp.dest('./typings'));
 });
 
+// Delete old files, transpile TS, test, and exit
 gulp.task('default', () => runSequence('clean', 'typescript', 'test', exit));
