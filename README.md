@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="250px" width="250px" src="https://raw.githubusercontent.com/davideast/Querybase/master/logos/logo_small.png">
+  <img height="75px" width="411px" src="https://raw.githubusercontent.com/davideast/Querybase/master/logos/logo-large.png">
   <p align="center">Bringing the <code>.where()</code> statement to Firebase</p>
 </p>
 
