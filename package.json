@@ -5,7 +5,7 @@
   "main": "/dist/querybase.js",
   "scripts": {
     "start": "gulp",
-    "test": "gulp test"
+    "test": "gulp"
   },
   "keywords": [
     "Firebase"
