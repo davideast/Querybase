@@ -13,6 +13,7 @@ const expect = chai.expect;
 // disable warnings
 console.warn = () => {};
 
+// Testing Travis
 describe('Querybase', () => {
 
   const ref = new Firebase('ws://test.firebaseio.com:5000/items');
