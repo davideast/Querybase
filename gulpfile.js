@@ -43,6 +43,7 @@ gulp.task('firebaseServer', () => {
   firebaseTestServer();
 });
 
+// Run a local server to see the coverage report
 gulp.task('coverageServer', () => {
   connect.server({
     root: 'coverage',
@@ -55,7 +56,7 @@ gulp.task('html', function () {
   gulp.src('./coverage/*.html')
     .pipe(connect.reload());
 });
- 
+
 gulp.task('watch', function () {
   gulp.watch(['./coverage/*.html'], ['html']);
 });
