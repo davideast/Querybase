@@ -1,5 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
+
 const Firebase = require('firebase');
 const Querybase = require('../../dist/querybase');
 const helpers = require('../helpers');

@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
         "module": "commonjs",
+        "noImplicitAny": false,
         "removeComments": false,
         "preserveConstEnums": true,
-        "out": "../../built/local/tsc.js",
+        "out": "querybase.js",
         "sourceMap": true
-    }
+    },
+    "files": [
+        "./src/querybase.ts"
+    ]
 }

@@ -251,11 +251,6 @@ describe('Querybase', () => {
       const errorWrapper = () => queryRef._createCompositeIndex([]);
       expect(errorWrapper).to.throw(Error);
     });
-    
-    it('should throw if an empty array is provided', () => {
-      const what = queryRef._createCompositeIndex(['name', 'age'], {});
-      console.log(what);
-    });    
         
   });
   
