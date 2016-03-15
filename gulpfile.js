@@ -33,8 +33,9 @@ gulp.task('pre-test', function () {
 
 // Use for build process, continues stream
 gulp.task('test', ['firebaseServer', 'typings', 'pre-test'], () => {
+  console.log(process.cwd());
   return gulp
-   .src('./tests/unit/**.spec.js', { read: false })
+   .src('./tests/unit/**.spec.js')
 	 .pipe(mocha({ reporter: 'spec' }))
    .pipe(istanbul.writeReports());
 });
@@ -43,6 +44,7 @@ gulp.task('firebaseServer', () => {
   firebaseTestServer();
 });
 
+// Run a local server to see the coverage report
 gulp.task('coverageServer', () => {
   connect.server({
     root: 'coverage',
@@ -55,18 +57,20 @@ gulp.task('html', function () {
   gulp.src('./coverage/*.html')
     .pipe(connect.reload());
 });
- 
+
 gulp.task('watch', function () {
   gulp.watch(['./coverage/*.html'], ['html']);
 });
 
-
+// Create code coverage
 gulp.task('coverage', ['watch', 'coverageServer']);
 
+// Generate typings
 gulp.task('typings', () => {
   return gulp
     .src('./tests/**/*.d.ts')
     .pipe(gulp.dest('./typings'));
 });
 
+// Delete old files, transpile TS, test, and exit
 gulp.task('default', () => runSequence('clean', 'typescript', 'test', exit));

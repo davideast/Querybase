@@ -7,34 +7,34 @@ const merge = require('merge2');
 const rename = require("gulp-rename");
 const uglify = require('gulp-uglify');
 
-const tsBuild = () => {  
+const tsBuild = () => {
   const path = './src/Querybase.ts';
   const tsResult = gulp.src(path)
     .pipe(sourcemaps.init())
-		.pipe(ts({
-   		sortOutput: true,
-			module: 'commonjs',
-			target: 'es5',
-      out: 'querybase.js',
+    .pipe(ts({
+      sortOutput: true,
+      module: 'commonjs',
+      target: 'es5',
+      out: 'Querybase.js',
       declaration: true
-	  }));
-    
+    }));
 
-    return merge([
-        
-      // querybase.d.ts
+
+  return merge([
+
+    // querybase.d.ts
 		  tsResult.dts
-        .pipe(gulp.dest('./dist'))
-        .pipe(gulp.dest('./typings/querybase')),
-          
-      // querybase.js
+      .pipe(gulp.dest('./dist'))
+      .pipe(gulp.dest('./typings/querybase')),
+
+    // querybase.js
 		  tsResult.js
-        .pipe(gulp.dest('./dist'))
-        .pipe(sourcemaps.write()),
-          
-	  ]); 
-    
-    
+      .pipe(gulp.dest('./dist'))
+      .pipe(sourcemaps.write()),
+
+  ]);
+
+
 };
 
 module.exports = tsBuild;

@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
 const Firebase = require('firebase');
-const Querybase = require('../../dist/querybase');
+const Querybase = require('../../dist/Querybase');
 const helpers = require('../helpers');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
 const _ = Querybase.QuerybaseUtils;
@@ -9,7 +9,6 @@ const assert = require('assert');
 const chai = require('chai');
 const sinon = require('sinon');
 const expect = chai.expect;
-
 describe('QuerybaseQuery', () => {
   
   let queryRef;
@@ -38,7 +37,7 @@ describe('QuerybaseQuery', () => {
     
     it('should return another QuerybaseQuery', () => {
       const nextQueryRef = queryRef.lessThan(3);
-      assert.equal(helpers.isQuerybaseQuery(nextQueryRef), true);    
+      assert.equal(QuerybaseQuery.prototype === Object.getPrototypeOf(nextQueryRef), true);    
     });
     
   });
