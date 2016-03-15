@@ -9,7 +9,6 @@ const assert = require('assert');
 const chai = require('chai');
 const sinon = require('sinon');
 const expect = chai.expect;
-
 describe('QuerybaseQuery', () => {
   
   let queryRef;

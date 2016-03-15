@@ -33,8 +33,9 @@ gulp.task('pre-test', function () {
 
 // Use for build process, continues stream
 gulp.task('test', ['firebaseServer', 'typings', 'pre-test'], () => {
+  console.log(process.cwd());
   return gulp
-   .src('./tests/unit/**.spec.js', { read: false })
+   .src('./tests/unit/**.spec.js')
 	 .pipe(mocha({ reporter: 'spec' }))
    .pipe(istanbul.writeReports());
 });
