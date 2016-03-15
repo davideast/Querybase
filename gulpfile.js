@@ -11,7 +11,8 @@ const tsBuild = require('./build/tsBuild');
 const connect = require('gulp-connect');
 const open = require('gulp-open');
 const firebaseTestServer = require('./tests/firebaseServer');
-const Server = require('karma').Server;
+const ts = require('gulp-typescript');
+const tsProject = ts.createProject('tsconfig.json');
 
 const exit = () => process.exit(0);
 
@@ -21,6 +22,13 @@ gulp.task('typescript', () => {
 	return tsBuild({ declaration: true })
 		.pipe(gulp.dest('./dist'))
     .pipe(gulp.dest('./examples'))
+});
+
+gulp.task('ts', function() {
+	var tsResult = tsProject.src() // instead of gulp.src(...) 
+		.pipe(ts(tsProject));
+	
+	return tsResult.js.pipe(gulp.dest('dist'));
 });
 
 gulp.task('pre-test', function () {
@@ -70,11 +78,4 @@ gulp.task('typings', () => {
     .pipe(gulp.dest('./typings'));
 });
 
-gulp.task('karma', function (done) {
-  new Server({
-    configFile: __dirname + '/karma.conf.js',
-    singleRun: true
-  }, done).start();
-});
-
-gulp.task('default', ['typescript', 'test'], exit);
+gulp.task('default', ['ts', 'test'], exit);
