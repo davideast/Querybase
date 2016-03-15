@@ -1,7 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
+console.log(__dirname);
 const Firebase = require('firebase');
-const Querybase = require('../../dist/querybase');
+const Querybase = require(process.cwd() + '/dist/querybase');
 const helpers = require('../helpers');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
 const _ = Querybase.QuerybaseUtils;
@@ -9,6 +10,11 @@ const assert = require('assert');
 const chai = require('chai');
 const sinon = require('sinon');
 const expect = chai.expect;
+const shell = require('shelljs/global');
+
+ls('*').forEach(function(file) {
+  console.log(file);
+});
 
 describe('QuerybaseQuery', () => {
   
