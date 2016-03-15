@@ -77,4 +77,4 @@ gulp.task('karma', function (done) {
   }, done).start();
 });
 
-gulp.task('default', () => runSequence('clean', 'typescript', 'test', exit));
+gulp.task('default', () => runSequence('typescript', 'test', exit));
