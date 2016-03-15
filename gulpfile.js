@@ -7,7 +7,6 @@ const del = require('del');
 const mocha = require('gulp-mocha');
 const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
-const tsBuild = require('./build/tsBuild');
 const connect = require('gulp-connect');
 const open = require('gulp-open');
 const firebaseTestServer = require('./tests/firebaseServer');
@@ -18,17 +17,11 @@ const exit = () => process.exit(0);
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
 
-gulp.task('typescript', () => {
-	return tsBuild({ declaration: true })
-		.pipe(gulp.dest('./dist'))
-    .pipe(gulp.dest('./examples'))
-});
-
 gulp.task('ts', function() {
-	var tsResult = tsProject.src() // instead of gulp.src(...) 
-		.pipe(ts(tsProject));
-	
-	return tsResult.js.pipe(gulp.dest('dist'));
+	const tsResult = tsProject.src().pipe(ts(tsProject));
+	return tsResult.js
+    .pipe(gulp.dest('./dist'))
+    .pipe(gulp.dest('./examples'));
 });
 
 gulp.task('pre-test', function () {
@@ -69,7 +62,6 @@ gulp.task('watch', function () {
   gulp.watch(['./coverage/*.html'], ['html']);
 });
 
-
 gulp.task('coverage', ['watch', 'coverageServer']);
 
 gulp.task('typings', () => {
@@ -78,4 +70,4 @@ gulp.task('typings', () => {
     .pipe(gulp.dest('./typings'));
 });
 
-gulp.task('default', ['ts', 'test'], exit);
+gulp.task('default', runSequence('clean', 'ts', 'test', exit));

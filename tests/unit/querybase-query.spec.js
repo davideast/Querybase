@@ -1,10 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
-const shell = require('shelljs/global');
-
-ls('*').forEach(function(file) {
-  console.log(file);
-});
 
 const Firebase = require('firebase');
 const Querybase = require('../../dist/querybase');
