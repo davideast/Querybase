@@ -17,7 +17,7 @@ const exit = () => process.exit(0);
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
 
-gulp.task('typescript', ['clean'], () => {
+gulp.task('typescript', () => {
 	return tsBuild({ declaration: true })
 		.pipe(gulp.dest('./dist'))
     .pipe(gulp.dest('./examples'))
@@ -77,4 +77,4 @@ gulp.task('karma', function (done) {
   }, done).start();
 });
 
-gulp.task('default', () => runSequence('typescript', 'test', exit));
+gulp.task('default', ['typescript', 'test'], exit);
