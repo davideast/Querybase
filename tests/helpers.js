@@ -1,16 +1,7 @@
 "use strict";
 const Firebase = require('firebase');
-const Querybase = require('../dist/querybase');
+const Querybase = require('../dist/Querybase');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
-
-/**
- * Detects a QuerybaseQuery
- * @param {QuerybaseQuery} query The possible QuerybaseQuery
- */
-function isQuerybaseQuery(query) {
-  const type = Object.getPrototypeOf(query);
-  return type === QuerybaseQuery.prototype;
-}
 
 /**
  * Detects a Querybase ref
@@ -51,4 +42,3 @@ module.exports.isFunction = isFunction;
 module.exports.isFirebaseRef = isFirebaseRef;
 module.exports.isFirebaseQuery = isFirebaseQuery;
 module.exports.isQuerybaseRef = isQuerybaseRef;
-module.exports.isQuerybaseQuery = isQuerybaseQuery;
