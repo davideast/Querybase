@@ -33,6 +33,7 @@
     "merge2": "^0.3.6",
     "mocha": "^2.3.4",
     "run-sequence": "^1.1.5",
+    "shelljs": "^0.6.0",
     "sinon": "^1.17.2"
   },
   "dependencies": {
