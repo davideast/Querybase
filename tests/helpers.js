@@ -1,6 +1,7 @@
 "use strict";
-const Querybase = require('../dist/querybase');
-const QuerybaseQuery = Querybase.QuerybaseQuery;
+const querybase = require('../dist/querybase');
+const Querybase = querybase.Querybase;
+const QuerybaseQuery = querybase.QuerybaseQuery;
 
 /**
  * Detects a QuerybaseQuery

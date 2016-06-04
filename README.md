@@ -32,7 +32,7 @@ Querybase takes a Firebase references with a list of fields to create composite 
  // Get a reference to the database service
  const database = firebase.database();
  const databaseRef = database.ref().child('people');
- const querybaseRef = new Querybase(databaseRef, ['name', 'age', 'location']);
+ const querybaseRef = querybase.ref(databaseRef, ['name', 'age', 'location']);
  
  // Automatically handles composite keys
  querybaseRef.push({ 

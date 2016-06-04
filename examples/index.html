@@ -23,7 +23,7 @@
 
 		var ref = firebase.database().ref();
 		var peopleRef = ref.child("people");
-		var queryRef = new Querybase(peopleRef, ['name', 'age', 'location', 'weight']);
+		var queryRef = querybase.ref(peopleRef, ['name', 'age', 'location', 'weight']);
 		
 		btnSeed.addEventListener('click', function(e) {
 			peopleRef.remove();
@@ -51,6 +51,7 @@
 				weight: weight
 			});
 		}
+			
 	</script>
 
 </body>
