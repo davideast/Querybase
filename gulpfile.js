@@ -9,7 +9,7 @@ const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
 const connect = require('gulp-connect');
 const open = require('gulp-open');
-const firebaseTestServer = require('./tests/firebaseServer');
+const firebaseServer = require('./tests/firebaseServer');
 const ts = require('gulp-typescript');
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -42,7 +42,7 @@ gulp.task('test', ['firebaseServer', 'typings', 'pre-test'], () => {
 });
 
 gulp.task('firebaseServer', () => {
-  firebaseTestServer();
+  firebaseServer.initializeApp();
 });
 
 gulp.task('coverageServer', () => {

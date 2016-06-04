@@ -1,6 +1,6 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
-const Firebase = require('firebase');
+const firebaseServer = require('../firebaseServer');
 const Querybase = require('../../dist/querybase');
 const helpers = require('../helpers');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
@@ -15,7 +15,7 @@ console.warn = () => {};
 
 describe('Querybase', () => {
 
-  const ref = new Firebase('ws://test.firebaseio.com:5000/items');
+  const ref = firebaseServer.ref().child('items');
   const indexes = ['color', 'height', 'weight'];
   const expectedIndex = {
     'color_height': 'Blue_67',

@@ -37,6 +37,6 @@
     "sinon": "^1.17.2"
   },
   "dependencies": {
-    "firebase": "^2.3.2"
+    "firebase": "^3.0.3"
   }
 }
