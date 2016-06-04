@@ -70,4 +70,4 @@ gulp.task('typings', () => {
     .pipe(gulp.dest('./typings'));
 });
 
-gulp.task('default', runSequence('clean', 'ts', 'test', exit));
+gulp.task('default', runSequence('clean', 'ts', 'test'));
