@@ -1,7 +1,7 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
 
-const Firebase = require('firebase');
+const firebaseServer = require('../firebaseServer');
 const Querybase = require('../../dist/querybase');
 const helpers = require('../helpers');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
@@ -16,7 +16,7 @@ describe('QuerybaseQuery', () => {
   let queryRef;
   beforeEach(() => queryRef = new QuerybaseQuery(ref.orderByChild('value')));
   
-  const ref = new Firebase('ws://test.firebaseio.com:5000/items');
+  const ref = firebaseServer.ref().child('items');
   
   describe('constructor', () => {
     
