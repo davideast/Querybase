@@ -523,7 +523,7 @@ class Querybase {
     const indexKeys = this.encodedKeys();
     const _indexOnRule = `
 "${_.getPathFromRef(this.ref())}": {
-  "._indexOn": [${_.keys(indexKeys).map((key) => { return `"${key}"`; }).join(", ")}]
+  "._indexOn": [${_.keys(indexKeys).map((key) => { return `"${indexKeys[key]}"`; }).join(", ")}]
 }`;
     console.warn(`Add this rule to drastically improve performance of your Firebase queries: \n ${_indexOnRule}`);
   }
