@@ -3,6 +3,4 @@ node_js:
 - stable
 before_script:
   - npm install -g gulp
-  - npm install tsd -g
-  - tsd reinstall --save --overwrite
 script: "npm start"
