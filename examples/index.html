@@ -1,17 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<script src="https://cdn.firebase.com/js/client/2.3.2/firebase.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
 	<script src="querybase.js"></script>
-  <meta charset="utf-8">
-  <title>Querybase</title>
+	<meta charset="utf-8">
+	<title>Querybase</title>
 </head>
+
 <body>
 
 	<button id="btnSeed">Seed</button>
-
 	<script>
-		var ref = new Firebase("https://querybase.firebaseio.com/");
+		// Initialize Firebase
+		var config = {
+			apiKey: "AIzaSyBonePK0eTlXuhy3Oy0KYc6g1_UrVtEXqs",
+			authDomain: "querybase-b565d.firebaseapp.com",
+			databaseURL: "https://querybase-b565d.firebaseio.com",
+			storageBucket: "querybase-b565d.appspot.com",
+		};
+		firebase.initializeApp(config);
+
+		var ref = firebase.database().ref();
 		var peopleRef = ref.child("people");
 		var queryRef = new Querybase(peopleRef, ['name', 'age', 'location', 'weight']);
 		
@@ -41,8 +51,8 @@
 				weight: weight
 			});
 		}
-		
 	</script>
 
 </body>
+
 </html>

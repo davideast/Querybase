@@ -13,12 +13,9 @@ function initializeApp() {
 }
 
 /**
- * Creates a default FirebaseServer
- * @param {Object} config - The object to configure the server 
- *                 { port: Number, url: String, data: Object}
+ * Creates a root ref for the database that is offline
  */
 function getRef() {
-  //config = config || { port: 5000, url: 'test.firebaseio.com', data: {}};
   const db = firebase.database();
   
   // go offline for testing
