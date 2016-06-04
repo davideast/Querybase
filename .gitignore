@@ -5,4 +5,3 @@ examples/querybase.min.js
 examples/**/*.d.ts
 coverage
 tsd.json
-service-account.json
