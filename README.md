@@ -18,8 +18,21 @@ Querybase takes a Firebase references with a list of fields to create composite 
 ### Querying using multiple fields
 
 ```js
- const firebaseRef = new Firebase('<my-app>/people');
- const querybaseRef = new Querybase(firebaseRef, ['name', 'age', 'location']);
+ 
+ // Set the configuration for your app
+ // TODO: Replace with your project's config object
+ const config = {
+   apiKey: '<your-api-key>',
+   authDomain: '<your-auth-domain>',
+   databaseURL: '<your-database-url>',
+   storageBucket: '<your-storage-bucket>'
+ };
+ firebase.initializeApp(config);
+
+ // Get a reference to the database service
+ const database = firebase.database();
+ const databaseRef = database.ref().child('people');
+ const querybaseRef = new Querybase(databaseRef, ['name', 'age', 'location']);
  
  // Automatically handles composite keys
  querybaseRef.push({ 

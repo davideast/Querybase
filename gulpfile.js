@@ -1,5 +1,3 @@
-/// <reference path="./typings/gulp/gulp.d.ts" />
-
 'use strict';
 
 const gulp = require('gulp');
