@@ -3,7 +3,7 @@
 const _ = require('../../dist/querybase').QuerybaseUtils;
 const assert = require('assert');
 const chai = require('chai');
-const firebaseServer = require('../firebaseServer');
+const Firebase = require('firebase');
 const helpers = require('../helpers');
 const should = chai.should();
 const expect = chai.expect;
@@ -58,17 +58,17 @@ describe('QuerybaseUtils', () => {
   describe('getPathFromRef', () => {
     
     it('should find the path from the Firebase reference', () => {
-      const ref = firebaseServer.ref().child('items');
+      const ref = new Firebase('ws://test.firebaseio.com:5000/items');
       assert.equal(_.getPathFromRef(ref), 'items');
     });
     
     it('should find a two deep path from the Firebase reference', () => {
-      const ref = firebaseServer.ref().child('items/1');
+      const ref = new Firebase('ws://test.firebaseio.com:5000/items/1');
       assert.equal(_.getPathFromRef(ref), 'items/1');
     });
     
     it('should find a three deep path from the Firebase reference', () => {
-      const ref = firebaseServer.ref().child('items/1/2');
+      const ref = new Firebase('ws://test.firebaseio.com:5000/items/1/2');
       assert.equal(_.getPathFromRef(ref), 'items/1/2');
     });
         

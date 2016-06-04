@@ -72,7 +72,7 @@ const _: QuerybaseUtils = {
    * @return {string}
    */
   createKey(propOne, propTwo) {
-    return `${propOne}~~${propTwo}`;
+    return `${propOne}_${propTwo}`;
   },
 
   /**
@@ -334,8 +334,8 @@ class Querybase {
 
     // for multiple criteria in the object, 
     // encode the keys and values provided
-    const criteriaIndex = this.encodeKey(keys.join('~~'));
-    const criteriaValues = this.encodeKey(values.join('~~'));
+    const criteriaIndex = this.encodeKey(keys.join('_'));
+    const criteriaValues = this.encodeKey(values.join('_'));
 
     return {
       predicate: criteriaIndex,
@@ -500,7 +500,7 @@ class Querybase {
    * @return {string}
    */
   encodeKey(value: string): string {
-    return "querybase~~" + _.encodeBase64(value);
+    return "querybase_" + _.encodeBase64(value);
   }
 
   /**
