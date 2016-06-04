@@ -1,5 +1,4 @@
 "use strict";
-const Firebase = require('firebase');
 const Querybase = require('../dist/querybase');
 const QuerybaseQuery = Querybase.QuerybaseQuery;
 
