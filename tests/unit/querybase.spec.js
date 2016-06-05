@@ -32,10 +32,10 @@ describe('Querybase', () => {
   const ref = firebaseServer.ref().child('items');
   const indexes = ['color', 'height', 'weight'];
   const expectedIndex = {
-    'color_height': 'Blue_67',
-    'color_height_weight': 'Blue_67_130',
-    'color_weight': 'Blue_130',
-    'height_weight': '67_130'
+    'color~~height': 'Blue~~67',
+    'color~~height~~weight': 'Blue~~67~~130',
+    'color~~weight': 'Blue~~130',
+    'height~~weight': '67~~130'
   };
   
   let queryRef;
@@ -226,8 +226,8 @@ describe('Querybase', () => {
     it('should encode a QueryPredicate for multiple criteria', () => {
       
       const expectedPredicate = {
-        predicate: 'querybase_Y29sb3JfaGVpZ2h0',
-        value: 'querybase_Qmx1ZV82Nw=='
+        predicate: 'querybase~~Y29sb3J+fmhlaWdodA==',
+        value: 'querybase~~Qmx1ZX5+Njc='
       };
       
       const predicate = queryRef._createQueryPredicate({ color: 'Blue', height: 67 });
@@ -273,11 +273,13 @@ describe('Querybase', () => {
     it('should encode an object', () => {
       
       const expectedEncodedIndex = { 
-        'querybase_Y29sb3JfaGVpZ2h0': 'querybase_Qmx1ZV82Nw==',
-        'querybase_Y29sb3JfaGVpZ2h0X3dlaWdodA==': 'querybase_Qmx1ZV82N18xMzA=',
-        'querybase_Y29sb3Jfd2VpZ2h0': 'querybase_Qmx1ZV8xMzA=',
-        'querybase_aGVpZ2h0X3dlaWdodA==': 'querybase_NjdfMTMw' 
+        'querybase~~Y29sb3J+fmhlaWdodA==': 'querybase~~Qmx1ZX5+Njc=',
+        'querybase~~Y29sb3J+fmhlaWdodH5+d2VpZ2h0': 'querybase~~Qmx1ZX5+Njd+fjEzMA==',
+        'querybase~~Y29sb3J+fndlaWdodA==': 'querybase~~Qmx1ZX5+MTMw',
+        'querybase~~aGVpZ2h0fn53ZWlnaHQ=': 'querybase~~Njd+fjEzMA==' 
       };
+      
+      
       
       const encodedIndex = queryRef._encodeCompositeIndex(expectedIndex);
       assert.deepEqual(expectedEncodedIndex, encodedIndex);
@@ -310,7 +312,7 @@ describe('Querybase', () => {
     
     it('should call the Firebase orderByChild function', () => {
       sinon.spy(queryRef.ref(), 'orderByChild');
-      queryRef._createEqualToQuery({ predicate: 'age_name', value: '27_David' });
+      queryRef._createEqualToQuery({ predicate: 'age~~name', value: '27~~David' });
       expect(queryRef.ref().orderByChild.calledOnce).to.be.ok;
       queryRef.ref().orderByChild.restore();
     });

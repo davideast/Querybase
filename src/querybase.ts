@@ -72,7 +72,7 @@ const _: QuerybaseUtils = {
    * @return {string}
    */
   createKey(propOne, propTwo) {
-    return `${propOne}_${propTwo}`;
+    return `${propOne}~~${propTwo}`;
   },
 
   /**
@@ -166,8 +166,7 @@ const _: QuerybaseUtils = {
  * 
  * @example
  *  // Querybase for multiple equivalency
- *  const database = firebase.database();
- *  const firebaseRef = database.ref().child('people');
+ *  const firebaseRef = new Firebase('<my-app>/people');
  *  const querybaseRef = new Querybase(firebaseRef, ['name', 'age', 'location']);
  *  
  *  // Automatically handles composite keys
@@ -335,8 +334,8 @@ class Querybase {
 
     // for multiple criteria in the object, 
     // encode the keys and values provided
-    const criteriaIndex = this.encodeKey(keys.join('_'));
-    const criteriaValues = this.encodeKey(values.join('_'));
+    const criteriaIndex = this.encodeKey(keys.join('~~'));
+    const criteriaValues = this.encodeKey(values.join('~~'));
 
     return {
       predicate: criteriaIndex,
@@ -501,7 +500,7 @@ class Querybase {
    * @return {string}
    */
   encodeKey(value: string): string {
-    return "querybase_" + _.encodeBase64(value);
+    return "querybase~~" + _.encodeBase64(value);
   }
 
   /**
@@ -526,7 +525,7 @@ class Querybase {
 "${_.getPathFromRef(this.ref())}": {
   "._indexOn": [${_.keys(indexKeys).map((key) => { return `"${indexKeys[key]}"`; }).join(", ")}]
 }`;
-    console.warn(`Add this rule to drastically improve performance of your Firebase queries: \n ${_indexOnRule}`);
+    console.warn(`Add this rule to drastically improve performance of your Realtime Database queries: \n ${_indexOnRule}`);
   }
 
 }
