@@ -166,7 +166,8 @@ const _: QuerybaseUtils = {
  * 
  * @example
  *  // Querybase for multiple equivalency
- *  const firebaseRef = new Firebase('<my-app>/people');
+ *  const database = firebase.database();
+ *  const firebaseRef = database.ref().child('people');
  *  const querybaseRef = new Querybase(firebaseRef, ['name', 'age', 'location']);
  *  
  *  // Automatically handles composite keys
@@ -607,16 +608,25 @@ class QuerybaseQuery {
 
 }
 
+const querybaseExport = {
+  ref: function (ref: Firebase, indexes: string[]) {
+    return new Querybase(ref, indexes);
+  }
+};
+
 // Export the modules for the current environment
 if (_.isCommonJS()) {
-  module.exports = Querybase;
+  module.exports = querybaseExport;
+  module.exports.Querybase = Querybase;
   module.exports.QuerybaseUtils = _;
   module.exports.QuerybaseQuery = QuerybaseQuery;
 } else {
   /* istanbul ignore next */
-  window["Querybase"] = Querybase;
+  window["querybase"] = querybaseExport;
   /* istanbul ignore next */
-  window["Querybase"]["QuerybaseUtils"] = _;
+  window["querybase"]["Querybase"] = Querybase;
   /* istanbul ignore next */
-  window["Querybase"]["QuerybaseQuery"] = QuerybaseQuery;
+  window["querybase"]["QuerybaseUtils"] = _;
+  /* istanbul ignore next */
+  window["querybase"]["QuerybaseQuery"] = QuerybaseQuery;
 }

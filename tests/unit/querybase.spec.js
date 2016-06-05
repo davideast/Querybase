@@ -1,17 +1,31 @@
 /// <reference path="../../typings/tsd.d.ts" />
 'use strict'
 const firebaseServer = require('../firebaseServer');
-const Querybase = require('../../dist/querybase');
+const querybase = require('../../dist/querybase');
+const Querybase = querybase.Querybase;
+const QuerybaseQuery = querybase.QuerybaseQuery;
 const helpers = require('../helpers');
-const QuerybaseQuery = Querybase.QuerybaseQuery;
-const _ = Querybase.QuerybaseUtils;
+const _ = querybase.QuerybaseUtils;
 const assert = require('assert');
 const chai = require('chai');
 const sinon = require('sinon');
 const expect = chai.expect;
 
 // disable warnings
+// TODO: Create index rules for the querybase database
 console.warn = () => {};
+
+describe('querybase export', () => {
+  
+  const ref = firebaseServer.ref().child('items');
+  const indexes = ['color', 'height', 'weight'];
+  
+  it('should create a Querybase ref', () => {
+    const queryRef = querybase.ref(ref, indexes)
+    assert.equal(true, helpers.isQuerybaseRef(queryRef));
+  });
+  
+});
 
 describe('Querybase', () => {
 
