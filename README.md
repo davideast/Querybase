@@ -13,7 +13,7 @@
 
 ## Documentation
 
-Querybase takes a Firebase references with a list of fields to create composite keys. 
+Querybase takes a Firebase Database reference with a list of fields to create composite keys. 
 
 ### Querying using multiple fields
 
@@ -47,7 +47,7 @@ querybaseRef
     name: 'David',
     age: 27
   })
-  // returns a Firebase ref
+  // returns a Firebase Database ref
   .on('value', (snap) => {
     console.log(snap);
   });
@@ -57,6 +57,10 @@ querybaseRef
 ### Querying using one field
  
  ```js
+  // Get a reference to the database service
+ const database = firebase.database();
+ const databaseRef = database.ref().child('people');
+ const queryRef = querybase.query(databaseRef);
  // Querybase for single criteria, returns a Firebase Ref
  querybaseRef.where({ name: 'David'});
   
