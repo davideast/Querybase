@@ -18,19 +18,6 @@ Querybase takes a Firebase Database reference with a list of fields to create co
 ### Querying using multiple fields
 
 ```js
- 
- // Set the configuration for your app
- // TODO: Replace with your project's config object
- const config = {
-   apiKey: '<your-api-key>',
-   authDomain: '<your-auth-domain>',
-   databaseURL: '<your-database-url>',
-   storageBucket: '<your-storage-bucket>'
- };
- firebase.initializeApp(config);
-
- // Get a reference to the database service
- const database = firebase.database();
  const databaseRef = database.ref().child('people');
  const querybaseRef = querybase.ref(databaseRef, ['name', 'age', 'location']);
  
