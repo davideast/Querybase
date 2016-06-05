@@ -1,6 +1,6 @@
 <p align="center">
   <img height="75px" width="411px" src="https://raw.githubusercontent.com/davideast/Querybase/master/logos/logo-large.png">
-  <p align="center">Bringing the <code>.where()</code> statement to Firebase</p>
+  <p align="center">Bringing the <code>.where()</code> statement to the Firebase Database</p>
 </p>
 
 [![Build Status](https://travis-ci.org/davideast/Querybase.svg?branch=master)](https://travis-ci.org/davideast/Querybase)
