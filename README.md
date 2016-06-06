@@ -4,6 +4,7 @@
 </p>
 
 [![Build Status](https://travis-ci.org/davideast/Querybase.svg?branch=master)](https://travis-ci.org/davideast/Querybase)
+[![Coverage Status](https://coveralls.io/repos/github/davideast/Querybase/badge.svg?branch=master)](https://coveralls.io/github/davideast/Querybase?branch=master)
 
 ## What is Querybase?
 

@@ -4,3 +4,5 @@ node_js:
 before_script:
   - npm install -g gulp
 script: "npm start"
+after_script:
+- cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
