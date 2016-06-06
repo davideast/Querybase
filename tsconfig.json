@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "commonjs",
         "noImplicitAny": false,
-        "removeComments": false,
+        "removeComments": true,
         "preserveConstEnums": true,
         "out": "querybase.js",
         "sourceMap": true

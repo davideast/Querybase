@@ -10,7 +10,9 @@ const open = require('gulp-open');
 const firebaseServer = require('./tests/firebaseServer');
 const ts = require('gulp-typescript');
 const tsProject = ts.createProject('tsconfig.json');
-
+const uglify = require('gulp-uglify');
+const size = require('gulp-filesize');
+ 
 const exit = () => process.exit(0);
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
@@ -18,6 +20,8 @@ gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/i
 gulp.task('ts', function() {
 	const tsResult = tsProject.src().pipe(ts(tsProject));
 	return tsResult.js
+    .pipe(uglify())
+    .pipe(size())
     .pipe(gulp.dest('./dist'))
     .pipe(gulp.dest('./examples'));
 });
