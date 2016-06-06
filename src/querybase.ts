@@ -400,7 +400,7 @@ class Querybase {
   /**
    * Creates a set of composite keys with composite data. Creates every
    * possible combination of keys with respecive combined values. Redudant 
-   * keys are not included ('name~~age' vs. 'age~~name').
+   * keys are not included ('name~~age' vs. 'agenname').
    * @param {any[]} indexes
    * @param {Object} data
    * @param {Object?} indexHash for recursive check
@@ -570,7 +570,7 @@ class QuerybaseQuery {
    * @return {FirebaseQuery}
    */
   lessThan(value) {
-    return new QuerybaseQuery(this.query().endAt(value));
+    return this.query().endAt(value);
   }
 
   /**

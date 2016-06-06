@@ -37,11 +37,6 @@ describe('QuerybaseQuery', () => {
       queryRef.query().endAt.restore();    
     });
     
-    it('should return another QuerybaseQuery', () => {
-      const nextQueryRef = queryRef.lessThan(3);
-      assert.equal(helpers.isQuerybaseQuery(nextQueryRef), true);    
-    });
-    
   });
   
   describe('greaterThan', () => {    
