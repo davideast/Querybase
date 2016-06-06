@@ -1,6 +1,6 @@
 <p align="center">
   <img height="75px" width="411px" src="https://raw.githubusercontent.com/davideast/Querybase/master/logos/logo-large.png">
-  <p align="center">Bringing the <code>.where()</code> statement to Firebase</p>
+  <p align="center">Bringing the <code>.where()</code> statement to the Firebase Database</p>
 </p>
 
 [![Build Status](https://travis-ci.org/davideast/Querybase.svg?branch=master)](https://travis-ci.org/davideast/Querybase)
@@ -19,20 +19,7 @@ Querybase takes a Firebase Database reference with a list of fields to create co
 ### Querying using multiple fields
 
 ```js
- 
- // Set the configuration for your app
- // TODO: Replace with your project's config object
- const config = {
-   apiKey: '<your-api-key>',
-   authDomain: '<your-auth-domain>',
-   databaseURL: '<your-database-url>',
-   storageBucket: '<your-storage-bucket>'
- };
- firebase.initializeApp(config);
-
- // Get a reference to the database service
- const database = firebase.database();
- const databaseRef = database.ref().child('people');
+ const databaseRef = firebase.database().ref().child('people');
  const querybaseRef = querybase.ref(databaseRef, ['name', 'age', 'location']);
  
  // Automatically handles composite keys
@@ -43,24 +30,21 @@ Querybase takes a Firebase Database reference with a list of fields to create co
  });
  
 // Find records by multiple fields
-querybaseRef
+// returns a Firebase Database ref
+const queriedDbRef = querybaseRef
   .where({
     name: 'David',
     age: 27
-  })
-  // returns a Firebase Database ref
-  .on('value', (snap) => {
-    console.log(snap);
   });
- 
+  
+ // Listen for realtime updates
+ queriedDbRef.on('value', snap => console.log(snap));
  ```
  
 ### Querying using one field
  
  ```js
-  // Get a reference to the database service
- const database = firebase.database();
- const databaseRef = database.ref().child('people');
+ const databaseRef = firebase.database.ref().child('people');
  const queryRef = querybase.query(databaseRef);
  // Querybase for single criteria, returns a Firebase Ref
  querybaseRef.where({ name: 'David'});
