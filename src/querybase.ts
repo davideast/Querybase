@@ -223,7 +223,7 @@ class Querybase {
     this.ref = () => ref;
     this.indexOn = () => indexOn;
     /* istanbul ignore next */
-    this.key = () => this.ref().key();
+    this.key = () => this.ref().getKey();
     this.encodedKeys = () => this.encodeKeys(this.indexOn());
   }
 
