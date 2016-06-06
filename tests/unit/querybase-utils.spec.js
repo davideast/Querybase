@@ -13,6 +13,14 @@ describe('QuerybaseUtils', () => {
   
   it('should exist', () => { expect(_).to.exist; })
   
+  describe('indexKey', () => {
+    
+    it('should return the proper key', () => {
+      assert.equal('~~', _.indexKey());
+    });
+    
+  });
+  
   describe('isString', () => {
     
     it('should return true for a string value', () => {
