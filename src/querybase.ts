@@ -201,12 +201,12 @@ class Querybase {
 
   // read only properties
 
-  // Returns a read-only Firebase reference
+  // Returns a read-only Database reference
   ref: () => Firebase;
   // Returns a read-only set of indexes
   indexOn: () => string[];
-  // the key of the Firebase ref
-  key: () => string;
+  // the key of the Database ref
+  getKey: () => string;
   // the set of indexOn keys base64 encoded
   private encodedKeys: () => string[];
 
@@ -223,7 +223,7 @@ class Querybase {
     this.ref = () => ref;
     this.indexOn = () => indexOn;
     /* istanbul ignore next */
-    this.key = () => this.ref().getKey();
+    this.getKey = () => this.ref().getKey();
     this.encodedKeys = () => this.encodeKeys(this.indexOn());
   }
 

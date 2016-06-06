@@ -57,6 +57,16 @@ describe('Querybase', () => {
     
   });
   
+  describe('getKey', () => {
+    
+    it('should throw if no indexes are provided', () => {
+      const querybaseRef = querybase.ref(ref, ['name', 'age']);
+      const key = querybaseRef.getKey();
+      assert.equal(key, 'items');
+    });    
+    
+  });
+  
   describe('set', () => {
 
     it('should call the Firebase set function', () => {
