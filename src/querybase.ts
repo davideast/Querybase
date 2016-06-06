@@ -15,6 +15,7 @@ interface QueryPredicate {
  * Defines the utility methods used in Querybase
  */
 interface QuerybaseUtils {
+  indexKey(): string;
   isCommonJS(): boolean;
   isString(value): boolean;
   isObject(value): boolean;
@@ -29,6 +30,10 @@ interface QuerybaseUtils {
 }
 
 const _: QuerybaseUtils = {
+
+  indexKey(): string {
+    return '~~';
+  },
 
   /**
    * Detects whether it is a node enviroment
@@ -368,8 +373,8 @@ class Querybase {
    * @return {FirebaseRef}
    * @example
    *   // set of criteria
-   *   const ref = new Firebase("<my-app>/people");
-   *   const querybaseRef = new Querybase(ref, ['name', 'location', 'age']);
+   *   const firebaseRef = firebase.database.ref.child('people');
+   *   const querybaseRef = querybase.ref(firebaseRef, ['name', 'age', 'location']);
    *   querybaseRef.where({
    *    name: 'David',
    *    age: 27
@@ -395,7 +400,7 @@ class Querybase {
   /**
    * Creates a set of composite keys with composite data. Creates every
    * possible combination of keys with respecive combined values. Redudant 
-   * keys are not included ('name_age' vs. 'age_name').
+   * keys are not included ('name~~age' vs. 'age~~name').
    * @param {any[]} indexes
    * @param {Object} data
    * @param {Object?} indexHash for recursive check
@@ -407,10 +412,10 @@ class Querybase {
    *  
    *  // compositeKeys
    *  {
-   *    'name_age': 'David_27',
-   *    'name_age_location': 'David_27_SF',
-   *    'name_location': 'David_SF',
-   *    'age_location': '27_SF'
+   *    'name~~age': 'David~~27',
+   *    'name~~age~~location': 'David~~27~~SF',
+   *    'name~~location': 'David~~SF',
+   *    'age~~location': '27~~SF'
    *  }
    */
   private _createCompositeIndex(indexes: any[], data: Object, indexHash?: Object) {
@@ -430,7 +435,7 @@ class Querybase {
     // create a copy of the array to not modifiy the original properties
     const propCop = indexes.slice();
     // remove the first property, this ensures no 
-    // redundant keys are created (age_name vs. name_age)
+    // redundant keys are created (age~~name vs. name~~age)
     const mainProp = propCop.shift();
     // recursive check for the indexHash
     indexHash = indexHash || {};
@@ -441,15 +446,15 @@ class Querybase {
 
       // first level keys
       // ex: ['name', 'age', 'location']
-      // -> 'name_age'
-      // -> 'name_location'
-      // -> 'age_location'
+      // -> 'name~~age'
+      // -> 'name~~location'
+      // -> 'age~~location'
       indexHash[_.createKey(mainProp, prop)] =
         _.createKey(data[mainProp], data[prop]);
 
       // create indexes for all property combinations
       // ex: ['name', 'age', 'location']
-      //  -> 'name_age_location'
+      //  -> 'name~~age~~location'
       propCop.forEach((subProp) => {
         propString = _.createKey(propString, subProp);
         valueString = _.createKey(valueString, data[subProp]);
@@ -539,8 +544,8 @@ class Querybase {
  * @param {FirebaseQuery} query 
  * 
  * @example
- *  const firebaseRef = new Firebase('<my-app>/people');
- *  const querybaseRef = new Querybase(firebaseRef, ['name', 'age', 'location']);
+ *  const firebaseRef = firebase.database.ref.child('people');
+ *  const querybaseRef = querybase.ref(firebaseRef, ['name', 'age', 'location']);
  * 
  *  // Querybase for a single string criteria, returns
  *  // a QuerybaseQuery, which returns a Firebase Ref
