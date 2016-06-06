@@ -12,7 +12,19 @@
 - **No client-side filtering** - Querybase genererates composite keys to provide querying on multiple fields.
 - **Simple Query API** - Use common query methods such as `.greaterThan()`, `.lessThan()`, and `.startsWith()`.
 
-## Documentation
+## Install
+
+```bash
+npm install querybase --save
+```
+
+Use via [npmcdn](https://npmcdn.com)
+
+```html
+<script src="https://npmcdn.com/querybase@0.2.0></script>
+```
+
+## Example usage
 
 Querybase takes a Firebase Database reference with a list of fields to create composite keys. 
 
@@ -42,6 +54,8 @@ const queriedDbRef = querybaseRef
  ```
  
 ### Querying using one field
+
+Querybase also provides rich querying methods for single fields.
  
  ```js
  const databaseRef = firebase.database.ref().child('people');
