@@ -19,7 +19,7 @@ Querybase takes a Firebase Database reference with a list of fields to create co
 ### Querying using multiple fields
 
 ```js
- const databaseRef = database.ref().child('people');
+ const databaseRef = firebase.database().ref().child('people');
  const querybaseRef = querybase.ref(databaseRef, ['name', 'age', 'location']);
  
  // Automatically handles composite keys
@@ -30,24 +30,21 @@ Querybase takes a Firebase Database reference with a list of fields to create co
  });
  
 // Find records by multiple fields
-querybaseRef
+// returns a Firebase Database ref
+const queriedDbRef = querybaseRef
   .where({
     name: 'David',
     age: 27
-  })
-  // returns a Firebase Database ref
-  .on('value', (snap) => {
-    console.log(snap);
   });
- 
+  
+ // Listen for realtime updates
+ queriedDbRef.on('value', snap => console.log(snap));
  ```
  
 ### Querying using one field
  
  ```js
-  // Get a reference to the database service
- const database = firebase.database();
- const databaseRef = database.ref().child('people');
+ const databaseRef = firebase.database.ref().child('people');
  const queryRef = querybase.query(databaseRef);
  // Querybase for single criteria, returns a Firebase Ref
  querybaseRef.where({ name: 'David'});
