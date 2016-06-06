@@ -12,6 +12,7 @@
   ],
   "author": "David East",
   "license": "Apache-2.0",
+  "files": ["dist"],
   "devDependencies": {
     "chai": "^3.4.1",
     "coveralls": "^2.11.9",
