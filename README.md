@@ -6,6 +6,8 @@
 [![Build Status](https://travis-ci.org/davideast/Querybase.svg?branch=master)](https://travis-ci.org/davideast/Querybase)
 [![Coverage Status](https://coveralls.io/repos/github/davideast/Querybase/badge.svg?branch=master)](https://coveralls.io/github/davideast/Querybase?branch=master)
 
+#### Querybase is in an experiment and not for production apps/sites/anything.
+
 ## What is Querybase?
 
 - **.where()** - Find records by multiple fields.
