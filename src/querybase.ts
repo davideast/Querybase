@@ -27,6 +27,10 @@ interface QuerybaseUtils {
   values(obj): any[];
   encodeBase64(data: string): string;
   arraysToObject(keys, values): Object;
+  lexicographicallySort(a: string, b: string): number;
+  getKeyIndexPositions(arr: string[]): Object;
+  createSortedObject(keys: string[], values: any[]);
+  sortObjectLexicographically(obj: Object): Object;
 }
 
 const _: QuerybaseUtils = {
@@ -160,7 +164,68 @@ const _: QuerybaseUtils = {
       count++;
     });
     return indexHash;
+  },
+
+  /**
+   * A function for lexicographically comparing keys. Used for 
+   * array sort methods.
+   * @param {string} a
+   * @param {string} b
+   * @return {number}
+   */  
+  lexicographicallySort(a: string, b: string): number {
+    return a.localeCompare(b);
+  },
+  
+  /**
+   * Creates an object with the key name and position in an array
+   * @param {string[]} arr
+   * @return {Object}
+   * @example
+   *  const keys = ['name', 'age', 'location'];
+   *  const indexKeys = _.getKeyIndexPositions(keys);
+   *    => { name: 0, age: 1, location: 2 }
+   */    
+  getKeyIndexPositions(arr: string[]): Object {
+    const indexOfKeys = {};
+    arr.forEach((key, index) => indexOfKeys[key] = index);
+    return indexOfKeys;
+  },
+
+  /**
+   * Creates an object whose keys are lexicographically sorted
+   * @param {string[]} keys
+   * @param {any[]} values
+   * @return {Object}
+   * @example
+   *  const keys = ['name', 'age', 'location'];
+   *  const values = ['David', '28', 'SF'];
+   *  const sortedObj = _.createSortedObject(keys, values);
+   *    => { age: '28', location: 'SF', name: 'David' }
+   */      
+  createSortedObject(keys: string[], values: any[]) {
+    const sortedRecord = {};
+    const indexOfKeys = this.getKeyIndexPositions(keys);
+    const indexKeys = this.keys(indexOfKeys);
+    indexKeys.forEach((key, index) => sortedRecord[key] = values[index]);
+    return sortedRecord;
+  },
+
+  /**
+   * Creates an object whose keys are lexicographically sorted
+   * @param {obj} Object
+   * @return {Object}
+   * @example
+   *  const record = { name: 'David', age: '28', location: 'SF' };
+   *  const sortedObj = _.sortObjectLexicographically(record);
+   *    => { age: '28', location: 'SF', name: 'David' }
+   */  
+  sortObjectLexicographically(obj: Object): Object {
+    const keys = this.keys(obj);
+    const values = this.values(obj);
+    return this.createSortedObject(keys, values);
   }
+  
 }
 
 /**
@@ -171,8 +236,8 @@ const _: QuerybaseUtils = {
  * 
  * @example
  *  // Querybase for multiple equivalency
- *  const firebaseRef = new Firebase('<my-app>/people');
- *  const querybaseRef = new Querybase(firebaseRef, ['name', 'age', 'location']);
+ *  const firebaseRef = firebase.database.ref().child('people');
+ *  const querybaseRef = querybase.ref(firebaseRef, ['name', 'age', 'location']);
  *  
  *  // Automatically handles composite keys
  *  querybaseRef.push({ 
@@ -228,13 +293,13 @@ class Querybase {
   }
 
   /**
-   * Check for a Firebase reference. Throw an exception if not provided.
+   * Check for a Firebase Database reference. Throw an exception if not provided.
    * @parameter {Firebase}
    * @return {void}
    */  
   private _assertFirebaseRef(ref) {
     if (ref === null || ref === undefined || !ref.on) {
-      throw new Error(`No Firebase Reference provided in the Querybase constructor.`);
+      throw new Error(`No Firebase Database Reference provided in the Querybase constructor.`);
     }
   }
 
