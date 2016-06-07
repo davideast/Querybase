@@ -206,8 +206,13 @@ const _: QuerybaseUtils = {
   createSortedObject(keys: string[], values: any[]) {
     const sortedRecord = {};
     const indexOfKeys = this.getKeyIndexPositions(keys);
-    const indexKeys = this.keys(indexOfKeys);
-    indexKeys.forEach((key, index) => sortedRecord[key] = values[index]);
+    const sortedKeys = keys.sort(this.lexicographicallySort);
+    
+    sortedKeys.forEach((key) => {
+      let index = indexOfKeys[key];
+      sortedRecord[key] = values[index];
+    });
+    
     return sortedRecord;
   },
 
@@ -286,7 +291,7 @@ class Querybase {
     this._assertIndexes(indexOn);
     
     this.ref = () => ref;
-    this.indexOn = () => indexOn;
+    this.indexOn = () => indexOn.sort(_.lexicographicallySort);
     /* istanbul ignore next */
     this.getKey = () => this.ref().getKey();
     this.encodedKeys = () => this.encodeKeys(this.indexOn());
@@ -387,9 +392,13 @@ class Querybase {
    * @return {FirebaseRef}
    */
   private _createQueryPredicate(criteria): QueryPredicate {
+    
+    // Sort provided object lexicographically to match keys in database
+    const sortedCriteria = _.sortObjectLexicographically(criteria);
+    
     // retrieve the keys and values array
-    const keys = _.keys(criteria);
-    const values = _.values(criteria);
+    const keys = _.keys(sortedCriteria);
+    const values = _.values(sortedCriteria);
 
     // warn about the indexes for indexOn rules
     this._warnAboutIndexOnRule();
@@ -456,7 +465,7 @@ class Querybase {
     if (_.isString(criteria)) {
       return this._createChildOrderedQuery(criteria);
     }
-
+    
     // Create the query predicate to build the Firebase Query
     const queryPredicate = this._createQueryPredicate(criteria);
     return this._createEqualToQuery(queryPredicate);
@@ -465,7 +474,7 @@ class Querybase {
   /**
    * Creates a set of composite keys with composite data. Creates every
    * possible combination of keys with respecive combined values. Redudant 
-   * keys are not included ('name~~age' vs. 'agenname').
+   * keys are not included ('name~~age' vs. 'age~~name').
    * @param {any[]} indexes
    * @param {Object} data
    * @param {Object?} indexHash for recursive check
@@ -555,13 +564,14 @@ class Querybase {
 
   /**
    * Encode (base64) all keys and data to avoid collisions with the
-   * chosen Querybase delimiter key (_)
+   * chosen Querybase delimiter key (~~)
    * @param {Object} indexWithData
    * @return {Object}
    */
   indexify(data: Object) {
     const compositeIndex = this._createCompositeIndex(this.indexOn(), data);
-    return this._encodeCompositeIndex(compositeIndex);
+    const encodedIndexes = this._encodeCompositeIndex(compositeIndex);
+    return encodedIndexes;
   }
 
   /**

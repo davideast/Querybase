@@ -160,7 +160,6 @@ describe('QuerybaseUtils', () => {
     it('should create an object with the index positions', () => {
       
       const indexOfKeys = _.getKeyIndexPositions(smallRecordKeys);
-      console.log(indexOfKeys);
       assert.deepEqual({ 'zed': 0, 'name': 1, 'time': 2 }, indexOfKeys);   
       
     });
@@ -171,12 +170,12 @@ describe('QuerybaseUtils', () => {
     
     it('should create a sorted object', () => {
       const sortedRecord = _.createSortedObject(smallRecordKeys, smallRecordValues);
-      assert.deepEqual(sortedSmallRecord, sortedRecord); 
+      assert.deepEqual(_.keys(sortedRecord), _.keys(sortedSmallRecord)); 
     })
     
     it('should create a sorted object', () => {
       const sortedRecord = _.createSortedObject(mediumRecordKeys, mediumRecordValues);
-      assert.deepEqual(sortedMediumRecord, sortedRecord); 
+      assert.deepEqual(_.keys(sortedMediumRecord), _.keys(sortedRecord)); 
     })    
     
   });
@@ -185,12 +184,12 @@ describe('QuerybaseUtils', () => {
     
     it('sort an object lexicographically', () => {
       const sortedRecord = _.sortObjectLexicographically(smallRecord);
-      assert.deepEqual(sortedSmallRecord, sortedRecord);
+      assert.deepEqual(_.keys(sortedSmallRecord), _.keys(sortedRecord));
     });
     
     it('sort an object lexicographically', () => {
       const sortedRecord = _.sortObjectLexicographically(mediumRecord);
-      assert.deepEqual(sortedMediumRecord, sortedRecord);
+      assert.deepEqual(_.keys(sortedMediumRecord), _.keys(sortedRecord));
     });    
     
   });

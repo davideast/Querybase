@@ -177,9 +177,8 @@ describe('Querybase', () => {
     
     it('should return a child Querybase ref with new indexes', () => {
       const childRef = queryRef.child('some/path', ['name', 'color'])
-      // TODO: array comparison
-      assert.equal(childRef.indexOn()[0], 'name');
-      assert.equal(childRef.indexOn()[1], 'color');
+      assert.equal(childRef.indexOn()[0], 'color');
+      assert.equal(childRef.indexOn()[1], 'name');
     });
     
     it('should throw if no indexes are provided', () => {
@@ -202,7 +201,7 @@ describe('Querybase', () => {
     });
     
     it('should create a Firebase query for multiple criteria', () => {
-      const query = queryRef.where({ color: 'green', weight: '120' });
+      const query = queryRef.where({ weight: '120', color: 'green' });
       assert.equal(true, helpers.isFirebaseRef(query));
     });
     
@@ -232,7 +231,7 @@ describe('Querybase', () => {
     });
     
     // encoded
-    // { color: 'Blue', height: '67 }
+    // { height: '67', color: 'Blue' }
     it('should encode a QueryPredicate for multiple criteria', () => {
       
       const expectedPredicate = {
@@ -240,7 +239,7 @@ describe('Querybase', () => {
         value: 'querybase~~Qmx1ZX5+Njc='
       };
       
-      const predicate = queryRef._createQueryPredicate({ color: 'Blue', height: 67 });
+      const predicate = queryRef._createQueryPredicate({ height: 67, color: 'Blue' });
       assert.deepEqual(expectedPredicate, predicate);
       
     });
@@ -252,9 +251,9 @@ describe('Querybase', () => {
     it('should create a composite index', () => {
 
       const compositeIndex = queryRef._createCompositeIndex(indexes, {
-        color: 'Blue',
+        weight: 130,
         height: 67,
-        weight: 130
+        color: 'Blue'
       });
       
       assert.deepEqual(compositeIndex, expectedIndex);
@@ -288,8 +287,6 @@ describe('Querybase', () => {
         'querybase~~Y29sb3J+fndlaWdodA==': 'querybase~~Qmx1ZX5+MTMw',
         'querybase~~aGVpZ2h0fn53ZWlnaHQ=': 'querybase~~Njd+fjEzMA==' 
       };
-      
-      
       
       const encodedIndex = queryRef._encodeCompositeIndex(expectedIndex);
       assert.deepEqual(expectedEncodedIndex, encodedIndex);
