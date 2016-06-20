@@ -27,6 +27,11 @@ interface QuerybaseUtils {
   values(obj): any[];
   encodeBase64(data: string): string;
   arraysToObject(keys, values): Object;
+  lexicographicallySort(a: string, b: string): number;
+  getKeyIndexPositions(arr: string[]): Object;
+  createSortedObject(keys: string[], values: any[]);
+  sortObjectLexicographically(obj: Object): Object;
+  decodeBase64(encoded: string): string;
 }
 
 const _: QuerybaseUtils = {
@@ -142,6 +147,19 @@ const _: QuerybaseUtils = {
   },
 
   /**
+   * Universal base64 decode method
+   * @param {string} data
+   * @return {string}
+   */  
+  decodeBase64(encoded: string): string {
+    if (this.isCommonJS()) {
+      return new Buffer(encoded, 'base64').toString('ascii');
+    } else {
+      return window.atob(encoded); 
+    }
+  },  
+
+  /**
    * Creates an object from a keys array and a values array.
    * @param {any[]} keys
    * @param {any[]} values
@@ -160,7 +178,73 @@ const _: QuerybaseUtils = {
       count++;
     });
     return indexHash;
+  },
+
+  /**
+   * A function for lexicographically comparing keys. Used for 
+   * array sort methods.
+   * @param {string} a
+   * @param {string} b
+   * @return {number}
+   */  
+  lexicographicallySort(a: string, b: string): number {
+    return a.localeCompare(b);
+  },
+  
+  /**
+   * Creates an object with the key name and position in an array
+   * @param {string[]} arr
+   * @return {Object}
+   * @example
+   *  const keys = ['name', 'age', 'location'];
+   *  const indexKeys = _.getKeyIndexPositions(keys);
+   *    => { name: 0, age: 1, location: 2 }
+   */    
+  getKeyIndexPositions(arr: string[]): Object {
+    const indexOfKeys = {};
+    arr.forEach((key, index) => indexOfKeys[key] = index);
+    return indexOfKeys;
+  },
+
+  /**
+   * Creates an object whose keys are lexicographically sorted
+   * @param {string[]} keys
+   * @param {any[]} values
+   * @return {Object}
+   * @example
+   *  const keys = ['name', 'age', 'location'];
+   *  const values = ['David', '28', 'SF'];
+   *  const sortedObj = _.createSortedObject(keys, values);
+   *    => { age: '28', location: 'SF', name: 'David' }
+   */      
+  createSortedObject(keys: string[], values: any[]) {
+    const sortedRecord = {};
+    const indexOfKeys = this.getKeyIndexPositions(keys);
+    const sortedKeys = keys.sort(this.lexicographicallySort);
+    
+    sortedKeys.forEach((key) => {
+      let index = indexOfKeys[key];
+      sortedRecord[key] = values[index];
+    });
+    
+    return sortedRecord;
+  },
+
+  /**
+   * Creates an object whose keys are lexicographically sorted
+   * @param {obj} Object
+   * @return {Object}
+   * @example
+   *  const record = { name: 'David', age: '28', location: 'SF' };
+   *  const sortedObj = _.sortObjectLexicographically(record);
+   *    => { age: '28', location: 'SF', name: 'David' }
+   */  
+  sortObjectLexicographically(obj: Object): Object {
+    const keys = this.keys(obj);
+    const values = this.values(obj);
+    return this.createSortedObject(keys, values);
   }
+  
 }
 
 /**
@@ -171,8 +255,8 @@ const _: QuerybaseUtils = {
  * 
  * @example
  *  // Querybase for multiple equivalency
- *  const firebaseRef = new Firebase('<my-app>/people');
- *  const querybaseRef = new Querybase(firebaseRef, ['name', 'age', 'location']);
+ *  const firebaseRef = firebase.database.ref().child('people');
+ *  const querybaseRef = querybase.ref(firebaseRef, ['name', 'age', 'location']);
  *  
  *  // Automatically handles composite keys
  *  querybaseRef.push({ 
@@ -198,6 +282,7 @@ const _: QuerybaseUtils = {
  *  querybaseRef.where('age').between(20, 30);
  */
 class Querybase {
+  INDEX_LENGTH = 3;
 
   // read only properties
 
@@ -206,7 +291,7 @@ class Querybase {
   // Returns a read-only set of indexes
   indexOn: () => string[];
   // the key of the Database ref
-  getKey: () => string;
+  key: string;
   // the set of indexOn keys base64 encoded
   private encodedKeys: () => string[];
 
@@ -219,33 +304,45 @@ class Querybase {
     // Check for constructor params and throw if not provided
     this._assertFirebaseRef(ref);
     this._assertIndexes(indexOn);
+    this._assertIndexLength(indexOn);
     
     this.ref = () => ref;
-    this.indexOn = () => indexOn;
+    this.indexOn = () => indexOn.sort(_.lexicographicallySort);
     /* istanbul ignore next */
-    this.getKey = () => this.ref().getKey();
+    this.key = this.ref().key;
     this.encodedKeys = () => this.encodeKeys(this.indexOn());
   }
 
   /**
-   * Check for a Firebase reference. Throw an exception if not provided.
+   * Check for a Firebase Database reference. Throw an exception if not provided.
    * @parameter {Firebase}
    * @return {void}
    */  
-  private _assertFirebaseRef(ref) {
+  private _assertFirebaseRef(ref: Firebase) {
     if (ref === null || ref === undefined || !ref.on) {
-      throw new Error(`No Firebase Reference provided in the Querybase constructor.`);
+      throw new Error(`No Firebase Database Reference provided in the Querybase constructor.`);
     }
   }
 
   /**
-   * Check for indexes. Throw and exception if not provided.
+   * Check for indexes. Throw an exception if not provided.
    * @param {string[]} indexes
    * @return {void}
    */    
-  private _assertIndexes(indexes) {
+  private _assertIndexes(indexes: any[]) {
     if (indexes === null || indexes === undefined) {
       throw new Error(`No indexes provided in the Querybase constructor. Querybase uses the indexOn() getter to create the composite queries for the where() method.`);
+    }
+  }
+
+  /**
+   * Check for indexes length. Throw and exception if greater than the INDEX_LENGTH value.
+   * @param {string[]} indexes
+   * @return {void}
+   */   
+  private _assertIndexLength(indexes: any[]) {
+    if (indexes.length > this.INDEX_LENGTH) {
+      throw new Error(`Querybase supports only ${this.INDEX_LENGTH} indexes for multiple querying.`)
     }
   }
 
@@ -322,9 +419,13 @@ class Querybase {
    * @return {FirebaseRef}
    */
   private _createQueryPredicate(criteria): QueryPredicate {
+    
+    // Sort provided object lexicographically to match keys in database
+    const sortedCriteria = _.sortObjectLexicographically(criteria);
+    
     // retrieve the keys and values array
-    const keys = _.keys(criteria);
-    const values = _.values(criteria);
+    const keys = _.keys(sortedCriteria);
+    const values = _.values(sortedCriteria);
 
     // warn about the indexes for indexOn rules
     this._warnAboutIndexOnRule();
@@ -391,7 +492,7 @@ class Querybase {
     if (_.isString(criteria)) {
       return this._createChildOrderedQuery(criteria);
     }
-
+    
     // Create the query predicate to build the Firebase Query
     const queryPredicate = this._createQueryPredicate(criteria);
     return this._createEqualToQuery(queryPredicate);
@@ -400,7 +501,7 @@ class Querybase {
   /**
    * Creates a set of composite keys with composite data. Creates every
    * possible combination of keys with respecive combined values. Redudant 
-   * keys are not included ('name~~age' vs. 'agenname').
+   * keys are not included ('name~~age' vs. 'age~~name').
    * @param {any[]} indexes
    * @param {Object} data
    * @param {Object?} indexHash for recursive check
@@ -490,13 +591,14 @@ class Querybase {
 
   /**
    * Encode (base64) all keys and data to avoid collisions with the
-   * chosen Querybase delimiter key (_)
+   * chosen Querybase delimiter key (~~)
    * @param {Object} indexWithData
    * @return {Object}
    */
   indexify(data: Object) {
     const compositeIndex = this._createCompositeIndex(this.indexOn(), data);
-    return this._encodeCompositeIndex(compositeIndex);
+    const encodedIndexes = this._encodeCompositeIndex(compositeIndex);
+    return encodedIndexes;
   }
 
   /**
