@@ -47,7 +47,7 @@ interface FirebaseDataSnapshot {
 	/**
 	 * Gets the key name of the location that generated this DataSnapshot.
 	 */
-	getKey(): string;
+	key: string;
 	/**
 	 * @deprecated Use key() instead.
 	 * Gets the key name of the location that generated this DataSnapshot.
@@ -238,7 +238,7 @@ interface Firebase extends FirebaseQuery {
 	/**
 	 * Returns the last token in a Firebase location.
 	 */
-	getKey(): string;
+	key: string;
 	/**
 	 * @deprecated Use key() instead.
 	 * Returns the last token in a Firebase location.

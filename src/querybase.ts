@@ -31,6 +31,7 @@ interface QuerybaseUtils {
   getKeyIndexPositions(arr: string[]): Object;
   createSortedObject(keys: string[], values: any[]);
   sortObjectLexicographically(obj: Object): Object;
+  decodeBase64(encoded: string): string;
 }
 
 const _: QuerybaseUtils = {
@@ -144,6 +145,19 @@ const _: QuerybaseUtils = {
       return window.btoa(data);
     }
   },
+
+  /**
+   * Universal base64 decode method
+   * @param {string} data
+   * @return {string}
+   */  
+  decodeBase64(encoded: string): string {
+    if (this.isCommonJS()) {
+      return new Buffer(encoded, 'base64').toString('ascii');
+    } else {
+      return window.atob(encoded); 
+    }
+  },  
 
   /**
    * Creates an object from a keys array and a values array.
@@ -268,6 +282,7 @@ const _: QuerybaseUtils = {
  *  querybaseRef.where('age').between(20, 30);
  */
 class Querybase {
+  INDEX_LENGTH = 3;
 
   // read only properties
 
@@ -276,7 +291,7 @@ class Querybase {
   // Returns a read-only set of indexes
   indexOn: () => string[];
   // the key of the Database ref
-  getKey: () => string;
+  key: string;
   // the set of indexOn keys base64 encoded
   private encodedKeys: () => string[];
 
@@ -289,11 +304,12 @@ class Querybase {
     // Check for constructor params and throw if not provided
     this._assertFirebaseRef(ref);
     this._assertIndexes(indexOn);
+    this._assertIndexLength(indexOn);
     
     this.ref = () => ref;
     this.indexOn = () => indexOn.sort(_.lexicographicallySort);
     /* istanbul ignore next */
-    this.getKey = () => this.ref().getKey();
+    this.key = this.ref().key;
     this.encodedKeys = () => this.encodeKeys(this.indexOn());
   }
 
@@ -302,20 +318,31 @@ class Querybase {
    * @parameter {Firebase}
    * @return {void}
    */  
-  private _assertFirebaseRef(ref) {
+  private _assertFirebaseRef(ref: Firebase) {
     if (ref === null || ref === undefined || !ref.on) {
       throw new Error(`No Firebase Database Reference provided in the Querybase constructor.`);
     }
   }
 
   /**
-   * Check for indexes. Throw and exception if not provided.
+   * Check for indexes. Throw an exception if not provided.
    * @param {string[]} indexes
    * @return {void}
    */    
-  private _assertIndexes(indexes) {
+  private _assertIndexes(indexes: any[]) {
     if (indexes === null || indexes === undefined) {
       throw new Error(`No indexes provided in the Querybase constructor. Querybase uses the indexOn() getter to create the composite queries for the where() method.`);
+    }
+  }
+
+  /**
+   * Check for indexes length. Throw and exception if greater than the INDEX_LENGTH value.
+   * @param {string[]} indexes
+   * @return {void}
+   */   
+  private _assertIndexLength(indexes: any[]) {
+    if (indexes.length > this.INDEX_LENGTH) {
+      throw new Error(`Querybase supports only ${this.INDEX_LENGTH} indexes for multiple querying.`)
     }
   }
 

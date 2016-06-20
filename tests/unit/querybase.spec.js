@@ -54,14 +54,20 @@ describe('Querybase', () => {
       const errorWrapper = () => new Querybase(ref);
       expect(errorWrapper).to.throw(Error);
     });
+
+    it('should throw if more than 3 indexes are provided', () => {
+      const fourIndexes = ['color', 'height', 'weight', 'location'];
+      const errorWrapper = () => new Querybase(ref, fourIndexes);
+      expect(errorWrapper).to.throw(Error);
+    });    
     
   });
   
-  describe('getKey', () => {
+  describe('key property', () => {
     
     it('should throw if no indexes are provided', () => {
       const querybaseRef = querybase.ref(ref, ['name', 'age']);
-      const key = querybaseRef.getKey();
+      const key = querybaseRef.key;
       assert.equal(key, 'items');
     });    
     
