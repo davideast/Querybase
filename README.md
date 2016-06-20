@@ -10,7 +10,7 @@
 
 ## What is Querybase?
 
-- **.where()** - Find records by multiple fields.
+- **.where()** - Find records by up to three fields.
 - **No client-side filtering** - Querybase genererates composite keys to provide querying on multiple fields.
 - **Simple Query API** - Use common query methods such as `.greaterThan()`, `.lessThan()`, and `.startsWith()`.
 
