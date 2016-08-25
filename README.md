@@ -28,7 +28,7 @@ Use via [npmcdn](https://npmcdn.com)
 
 ## Example usage
 
-Querybase takes a Firebase Database reference with a list of fields to create composite keys. 
+Querybase takes a Firebase Database reference with a list of fields to create composite keys. **You can only use up to three fields**. Any more would create a crazy amount of composite keys in the database.
 
 ### Querying using multiple fields
 
