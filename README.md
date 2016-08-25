@@ -23,7 +23,7 @@ npm install querybase --save
 Use via [npmcdn](https://npmcdn.com)
 
 ```html
-<script src="https://npmcdn.com/querybase@0.3.0></script>
+<script src="https://npmcdn.com/querybase@0.3.0"></script>
 ```
 
 ## Example usage
