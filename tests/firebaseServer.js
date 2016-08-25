@@ -7,8 +7,7 @@ const firebase = require("firebase");
  */
 function initializeApp() {
   firebase.initializeApp({
-    databaseURL: "https://querybase-b565d.firebaseio.com",
-    serviceAccount: "./service-account.json"
+    databaseURL: "https://querybase-b565d.firebaseio.com"
   }); 
 }
 
