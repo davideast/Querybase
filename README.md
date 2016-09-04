@@ -20,10 +20,10 @@
 npm install querybase --save
 ```
 
-Use via [npmcdn](https://npmcdn.com)
+Use via [unpkg](https://unpkg.com)
 
 ```html
-<script src="https://npmcdn.com/querybase@0.3.0"></script>
+<script src="https://unpkg.com/querybase@0.3.0"></script>
 ```
 
 ## Example usage
