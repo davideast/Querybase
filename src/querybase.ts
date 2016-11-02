@@ -620,7 +620,7 @@ class Querybase {
   }
 
   /**
-   * Print a warning to the console about using "._indexOn" rules for 
+   * Print a warning to the console about using ".indexOn" rules for 
    * the generated keys. This warning has a copy-and-pastable security rule
    * based upon the keys provided.
    * @param {string} value
@@ -630,9 +630,9 @@ class Querybase {
     const indexKeys = this.encodedKeys();
     const _indexOnRule = `
 "${_.getPathFromRef(this.ref())}": {
-  "._indexOn": [${_.keys(indexKeys).map((key) => { return `"${indexKeys[key]}"`; }).join(", ")}]
+  ".indexOn": [${_.keys(indexKeys).map((key) => { return `"${indexKeys[key]}"`; }).join(", ")}]
 }`;
-    console.warn(`Add this rule to drastically improve performance of your Realtime Database queries: \n ${_indexOnRule}`);
+    console.warn(`If you haven't yet, add this rule to drastically improve performance of your Realtime Database queries: \n ${_indexOnRule}`);
   }
 
 }
