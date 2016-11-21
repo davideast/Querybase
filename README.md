@@ -23,7 +23,7 @@ npm install querybase --save
 Use via [unpkg](https://unpkg.com)
 
 ```html
-<script src="https://unpkg.com/querybase@0.3.0"></script>
+<script src="https://unpkg.com/querybase@0.4.0"></script>
 ```
 
 ## Example usage
