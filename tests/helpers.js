@@ -1,5 +1,5 @@
 "use strict";
-const querybase = require('../dist/querybase');
+const querybase = require('../dist/querybase.umd');
 const Querybase = querybase.Querybase;
 const QuerybaseQuery = querybase.QuerybaseQuery;
 

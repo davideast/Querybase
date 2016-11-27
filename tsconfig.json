@@ -1,13 +1,17 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "es6",
         "noImplicitAny": false,
         "removeComments": true,
         "preserveConstEnums": true,
-        "out": "querybase.js",
-        "sourceMap": true
-    },
-    "files": [
-        "./src/querybase.ts"
-    ]
+        "outDir": "es6",
+        "sourceMap": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "types": [
+            "firebase",
+            "node"
+        ]
+    }
 }

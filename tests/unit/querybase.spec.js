@@ -1,7 +1,6 @@
-/// <reference path="../../typings/tsd.d.ts" />
 'use strict'
 const firebaseServer = require('../firebaseServer');
-const querybase = require('../../dist/querybase');
+const querybase = require('../../dist/querybase.umd');
 const Querybase = querybase.Querybase;
 const QuerybaseQuery = querybase.QuerybaseQuery;
 const helpers = require('../helpers');

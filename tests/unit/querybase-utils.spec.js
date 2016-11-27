@@ -1,6 +1,4 @@
-/// <reference path="../../typings/tsd.d.ts" />
-
-const _ = require('../../dist/querybase').QuerybaseUtils;
+const _ = require('../../dist/querybase.umd').QuerybaseUtils;
 const assert = require('assert');
 const chai = require('chai');
 const firebaseServer = require('../firebaseServer');
