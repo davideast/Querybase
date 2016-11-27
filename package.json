@@ -12,12 +12,14 @@
   ],
   "author": "David East",
   "license": "Apache-2.0",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
+    "@types/node": "^6.0.51",
     "chai": "^3.4.1",
     "coveralls": "^2.11.9",
     "del": "^2.2.0",
-    "firebase-server": "^0.5.1",
     "gulp": "^3.9.0",
     "gulp-connect": "^2.3.1",
     "gulp-filesize": "0.0.6",
@@ -28,18 +30,14 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.12.1",
     "gulp-uglify": "^1.5.3",
-    "karma": "^0.13.22",
-    "karma-chrome-launcher": "^0.2.2",
-    "karma-jasmine": "^0.3.7",
-    "karma-mocha": "^0.2.2",
-    "lodash": "^3.10.1",
-    "merge2": "^0.3.6",
     "mocha": "^2.3.4",
+    "rollup": "^0.36.4",
     "run-sequence": "^1.1.5",
     "shelljs": "^0.6.0",
-    "sinon": "^1.17.2"
+    "sinon": "^1.17.2",
+    "typescript": "^2.0.10"
   },
   "dependencies": {
-    "firebase": "^3.0.3"
+    "firebase": "^3.6.1"
   }
 }

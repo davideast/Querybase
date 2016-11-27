@@ -1,256 +1,14 @@
-/// <reference path="../typings/firebase/firebase.d.ts" />
-/// <reference path="../typings/node/node.d.ts" />
+import { _, QueryPredicate, QuerybaseUtils} from './QuerybaseUtils';
+import { QuerybaseQuery } from './QuerybaseQuery';
+import * as firebase from 'firebase';
 
-/**
- * Structure for building a FirebaseQuery
- * @property {string} predicate The predicate clause. ex: orderByChild(predicate)
- * @property {string} value The value for comparison orderByChild(predicate).equalTo(value)
- */
-interface QueryPredicate {
-  predicate: string;
-  value: string;
-}
-
-/**
- * Defines the utility methods used in Querybase
- */
-interface QuerybaseUtils {
-  indexKey(): string;
-  isCommonJS(): boolean;
-  isString(value): boolean;
-  isObject(value): boolean;
-  hasMultipleCriteria(criteriaKeys: string[]): boolean;
-  createKey(propOne, propTwo): string;
-  getPathFromRef(ref): string;
-  merge(obj1, obj2): Object;
-  keys(obj): string[];
-  values(obj): any[];
-  encodeBase64(data: string): string;
-  arraysToObject(keys, values): Object;
-  lexicographicallySort(a: string, b: string): number;
-  getKeyIndexPositions(arr: string[]): Object;
-  createSortedObject(keys: string[], values: any[]);
-  sortObjectLexicographically(obj: Object): Object;
-  decodeBase64(encoded: string): string;
-}
-
-const _: QuerybaseUtils = {
-
-  indexKey(): string {
-    return '~~';
-  },
-
-  /**
-   * Detects whether it is a node enviroment
-   * @return {boolean}
-   */
-  isCommonJS(): boolean {
-    return typeof module != 'undefined';
-  },
-
-  /**
-   * Detects whether a value is a string
-   * @param {any} value The possible string
-   * @return {boolean}
-   */
-  isString(value): boolean {
-    return typeof value === 'string' || value instanceof String;
-  },
-  
-  /**
-   * Detects whether a value is an object
-   * @param {any} value The possible object
-   * @return {boolean}
-   */
-  isObject(value): boolean {
-    return value !== null && typeof value === 'object';
-  },
-  
-  /**
-   * Detects whether a string array has more than one key
-   * @param {string[]} criteriaKeys The array of keys
-   * @return {boolean}
-   */
-  hasMultipleCriteria(criteriaKeys: string[]): boolean {
-    return criteriaKeys.length > 1;
-  },
-
-  /**
-   * Creates the key pattern for index properties
-   * @param {string} propOne
-   * @param {string} propTwo 
-   * @return {string}
-   */
-  createKey(propOne, propTwo) {
-    return `${propOne}${_.indexKey()}${propTwo}`;
-  },
-
-  /**
-   * Retrieves the Firebase path, minus the full URL, 
-   * from a Firebase Reference
-   * @param {Firebase} ref
-   * @return {string}
-   */
-  getPathFromRef(ref): string {
-    const PATH_POSITION = 3;
-    let pathArray = ref.toString().split('/');
-    return pathArray.slice(PATH_POSITION, pathArray.length).join('/');
-  },
-
-  /**
-   * Merges two objects into one
-   * @param {object} obj1
-   * @param {object} obj2
-   * @return {object}
-   */
-  merge(obj1, obj2) {
-    let mergedHash = {};
-    for (let prop in obj1) {
-      mergedHash[prop] = obj1[prop];
-    }
-    for (let prop in obj2) {
-      mergedHash[prop] = obj2[prop];
-    }
-    return mergedHash;
-  },
-
-  /**
-   * Returns an array of keys for an object
-   * @param {object} obj
-   * @return {string[]}
-   */
-  keys(obj) {
-    return Object.keys(obj);
-  },
-
-  /**
-   * Returns an array of values for an object
-   * @param {object} obj
-   * @return {any[]}
-   */
-  values(obj) {
-    return Object.keys(obj).map(key => { return obj[key]; });
-  },
-  
-  /**
-   * Universal base64 encode method
-   * @param {string} data
-   * @return {string}
-   */
-  encodeBase64(data: string): string {
-    if (this.isCommonJS()) {
-      return new Buffer(data).toString('base64');
-    } else {
-      /* istanbul ignore next */
-      return window.btoa(data);
-    }
-  },
-
-  /**
-   * Universal base64 decode method
-   * @param {string} data
-   * @return {string}
-   */  
-  decodeBase64(encoded: string): string {
-    if (this.isCommonJS()) {
-      return new Buffer(encoded, 'base64').toString('ascii');
-    } else {
-      return window.atob(encoded); 
-    }
-  },  
-
-  /**
-   * Creates an object from a keys array and a values array.
-   * @param {any[]} keys
-   * @param {any[]} values
-   * @return {Object}
-   * @example
-   *  const keys = ['name', 'age'];
-   *  const values = ['David', '27'];
-   *  const object = _.arraysToObject(keys, value); // { name: 'David', age: '27' }
-   */
-  arraysToObject(keys, values): Object {
-    let indexHash = {};
-    let count = 0;
-    keys.forEach((key) => {
-      const value = values[count];
-      indexHash[key] = value;
-      count++;
-    });
-    return indexHash;
-  },
-
-  /**
-   * A function for lexicographically comparing keys. Used for 
-   * array sort methods.
-   * @param {string} a
-   * @param {string} b
-   * @return {number}
-   */  
-  lexicographicallySort(a: string, b: string): number {
-    return a.localeCompare(b);
-  },
-  
-  /**
-   * Creates an object with the key name and position in an array
-   * @param {string[]} arr
-   * @return {Object}
-   * @example
-   *  const keys = ['name', 'age', 'location'];
-   *  const indexKeys = _.getKeyIndexPositions(keys);
-   *    => { name: 0, age: 1, location: 2 }
-   */    
-  getKeyIndexPositions(arr: string[]): Object {
-    const indexOfKeys = {};
-    arr.forEach((key, index) => indexOfKeys[key] = index);
-    return indexOfKeys;
-  },
-
-  /**
-   * Creates an object whose keys are lexicographically sorted
-   * @param {string[]} keys
-   * @param {any[]} values
-   * @return {Object}
-   * @example
-   *  const keys = ['name', 'age', 'location'];
-   *  const values = ['David', '28', 'SF'];
-   *  const sortedObj = _.createSortedObject(keys, values);
-   *    => { age: '28', location: 'SF', name: 'David' }
-   */      
-  createSortedObject(keys: string[], values: any[]) {
-    const sortedRecord = {};
-    const indexOfKeys = this.getKeyIndexPositions(keys);
-    const sortedKeys = keys.sort(this.lexicographicallySort);
-    
-    sortedKeys.forEach((key) => {
-      let index = indexOfKeys[key];
-      sortedRecord[key] = values[index];
-    });
-    
-    return sortedRecord;
-  },
-
-  /**
-   * Creates an object whose keys are lexicographically sorted
-   * @param {obj} Object
-   * @return {Object}
-   * @example
-   *  const record = { name: 'David', age: '28', location: 'SF' };
-   *  const sortedObj = _.sortObjectLexicographically(record);
-   *    => { age: '28', location: 'SF', name: 'David' }
-   */  
-  sortObjectLexicographically(obj: Object): Object {
-    const keys = this.keys(obj);
-    const values = this.values(obj);
-    return this.createSortedObject(keys, values);
-  }
-  
-}
+export type DatabaseReference = firebase.database.Reference;
+export type DatabaseQuery = firebase.database.Query;
 
 /**
  * Querybase - Provides composite keys and a simplified query API.
  * 
- * @param {Firebase} ref 
+ * @param {DatabaseReference} ref 
  * @param {indexOn} string[]
  * 
  * @example
@@ -281,13 +39,13 @@ const _: QuerybaseUtils = {
  *  querybaseRef.where('age').greaterThan(20);
  *  querybaseRef.where('age').between(20, 30);
  */
-class Querybase {
+export class Querybase {
   INDEX_LENGTH = 3;
 
   // read only properties
 
   // Returns a read-only Database reference
-  ref: () => Firebase;
+  ref: () => DatabaseReference;
   // Returns a read-only set of indexes
   indexOn: () => string[];
   // the key of the Database ref
@@ -299,7 +57,7 @@ class Querybase {
    * The constructor provides the backing values 
    * for the read-only properties
    */
-  constructor(ref: Firebase, indexOn: string[]) {
+  constructor(ref: DatabaseReference, indexOn: string[]) {
     
     // Check for constructor params and throw if not provided
     this._assertFirebaseRef(ref);
@@ -315,10 +73,10 @@ class Querybase {
 
   /**
    * Check for a Firebase Database reference. Throw an exception if not provided.
-   * @parameter {Firebase}
+   * @parameter {DatabaseReference}
    * @return {void}
    */  
-  private _assertFirebaseRef(ref: Firebase) {
+  private _assertFirebaseRef(ref: DatabaseReference) {
     if (ref === null || ref === undefined || !ref.on) {
       throw new Error(`No Firebase Database Reference provided in the Querybase constructor.`);
     }
@@ -370,7 +128,7 @@ class Querybase {
    * Push a child node to the realtime database with composite keys, if 
    * there is more than one property in the object
    * @param {any} data
-   * @return {FirebaseRef}
+   * @return {DatabaseReference}
    */
   push(data) {
 
@@ -405,7 +163,7 @@ class Querybase {
    * Create a child reference with a specified path and provide 
    * specific indexes for the child path
    * @param {any} data
-   * @return {FirebaseRef}
+   * @return {DatabaseReference}
    */
   child(path, indexOn: string[]) {
     return new Querybase(this.ref().child(path), indexOn);
@@ -416,7 +174,7 @@ class Querybase {
    * combines the keys and values of the criteria object into a predicate
    * and value string respectively.
    * @param {Object} criteria
-   * @return {FirebaseRef}
+   * @return {DatabaseReference}
    */
   private _createQueryPredicate(criteria): QueryPredicate {
     
@@ -461,9 +219,9 @@ class Querybase {
   /**
    * Creates an equalTo() FirebaseQuery from a QueryPredicate.
    * @param {Object} criteria
-   * @return {FirebaseRef}
+   * @return {DatabaseReference}
    */
-  private _createEqualToQuery(criteria: QueryPredicate): FirebaseQuery {
+  private _createEqualToQuery(criteria: QueryPredicate): DatabaseQuery {
     return this.ref().orderByChild(criteria.predicate).equalTo(criteria.value);
   }
   
@@ -471,7 +229,7 @@ class Querybase {
    * Find a set of records by a set of criteria or a string property. 
    * Works with equivalency only.
    * @param {Object} criteria
-   * @return {FirebaseRef}
+   * @return {DatabaseReference}
    * @example
    *   // set of criteria
    *   const firebaseRef = firebase.database.ref.child('people');
@@ -522,7 +280,7 @@ class Querybase {
   private _createCompositeIndex(indexes: any[], data: Object, indexHash?: Object) {
     
     if(!Array.isArray(indexes)) {
-      throw new Error(`_createCompositeIndex expects an array for the first parameter: found ${indexes.toString()}`)
+      throw new Error(`_createCompositeIndex expects an array for the first parameter: found ${indexes}`)
     }
     
     if(indexes.length === 0) {
@@ -530,7 +288,7 @@ class Querybase {
     }
     
     if(!_.isObject(data)) {
-      throw new Error(`_createCompositeIndex expects an object for the second parameter: found ${data.toString()}`);
+      throw new Error(`_createCompositeIndex expects an object for the second parameter: found ${data}`);
     }
     
     // create a copy of the array to not modifiy the original properties
@@ -635,104 +393,4 @@ class Querybase {
     console.warn(`If you haven't yet, add this rule to drastically improve performance of your Realtime Database queries: \n ${_indexOnRule}`);
   }
 
-}
-
-/**
- * QuerybaseQuery - Provides a simple querying API
- * 
- * A QuerybaseQuery is created through using a string criteria
- * on a Querybase reference. It is not meant to be directly created.
- * 
- * @param {FirebaseQuery} query 
- * 
- * @example
- *  const firebaseRef = firebase.database.ref.child('people');
- *  const querybaseRef = querybase.ref(firebaseRef, ['name', 'age', 'location']);
- * 
- *  // Querybase for a single string criteria, returns
- *  // a QuerybaseQuery, which returns a Firebase Ref
- *  querybaseRef.where('name').startsWith('Da');
- *  querybaseRef.where('age').lessThan(30);
- *  querybaseRef.where('locaton').equalTo('SF');
- *  querybaseRef.where('age').greaterThan(20);
- *  querybaseRef.where('age').between(20, 30);
- */
-class QuerybaseQuery {
-
-  // read-only FirebaseQuery
-  private query: () => FirebaseQuery;
-
-  constructor(query: FirebaseQuery) {
-    this.query = () => query;
-  }
-
-  /**
-   * Find a set of records smaller than the provided value.
-   * @param {any} value
-   * @return {FirebaseQuery}
-   */
-  lessThan(value) {
-    return this.query().endAt(value);
-  }
-
-  /**
-   * Find a set of records larger than the provided value.
-   * @param {any} value
-   * @return {FirebaseQuery}
-   */
-  greaterThan(value) {
-    return this.query().startAt(value);
-  }
-
-  /**
-   * Find a set of records the same as the provided value.
-   * @param {any} value
-   * @return {FirebaseQuery}
-   */
-  equalTo(value) {
-    return this.query().equalTo(value);
-  }
-
-  /**
-   * Find a set of records that begins with the provided value.
-   * @param {string} value
-   * @return {FirebaseQuery}
-   */
-  startsWith(value: string) {
-    const firstChar = value.substr(0, 1);
-    return this.query().startAt(firstChar).endAt(`${value}\uf8ff`);
-  }
-
-  /**
-   * Find a set of records between the provided values.
-   * @param {string} value
-   * @return {FirebaseQuery}
-   */
-  between(valueOne: any, valueTwo: any) {
-    return this.query().startAt(valueOne).endAt(valueTwo);
-  }
-
-}
-
-const querybaseExport = {
-  ref: function (ref: Firebase, indexes: string[]) {
-    return new Querybase(ref, indexes);
-  }
-};
-
-// Export the modules for the current environment
-if (_.isCommonJS()) {
-  module.exports = querybaseExport;
-  module.exports.Querybase = Querybase;
-  module.exports.QuerybaseUtils = _;
-  module.exports.QuerybaseQuery = QuerybaseQuery;
-} else {
-  /* istanbul ignore next */
-  window["querybase"] = querybaseExport;
-  /* istanbul ignore next */
-  window["querybase"]["Querybase"] = Querybase;
-  /* istanbul ignore next */
-  window["querybase"]["QuerybaseUtils"] = _;
-  /* istanbul ignore next */
-  window["querybase"]["QuerybaseQuery"] = QuerybaseQuery;
 }
