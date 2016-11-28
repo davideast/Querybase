@@ -9,6 +9,7 @@ const firebaseServer = require('./tests/firebaseServer');
 const uglify = require('gulp-uglify');
 const size = require('gulp-filesize');
 const execSync = require('child_process').execSync;
+
 const exit = () => process.exit(0);
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
@@ -40,4 +41,8 @@ gulp.task('firebaseServer', () => {
   firebaseServer.initializeApp();
 });
 
+<<<<<<< HEAD
 gulp.task('default', runSequence('clean', 'ts', 'test', exit));
+=======
+gulp.task('default', runSequence('clean', 'ts', 'test', exit));
+>>>>>>> origin/master
