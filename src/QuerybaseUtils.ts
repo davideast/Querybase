@@ -140,7 +140,7 @@ export const _: QuerybaseUtils = {
       /* istanbul ignore next */
       return window.btoa(data);
     }
-  },
+  }, 
 
   /**
    * Creates an object from a keys array and a values array.
