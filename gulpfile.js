@@ -41,8 +41,4 @@ gulp.task('firebaseServer', () => {
   firebaseServer.initializeApp();
 });
 
-<<<<<<< HEAD
 gulp.task('default', runSequence('clean', 'ts', 'test', exit));
-=======
-gulp.task('default', runSequence('clean', 'ts', 'test', exit));
->>>>>>> origin/master
