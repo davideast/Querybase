@@ -28,7 +28,6 @@ export interface QuerybaseUtils {
   getKeyIndexPositions(arr: string[]): Object;
   createSortedObject(keys: string[], values: any[]);
   sortObjectLexicographically(obj: Object): Object;
-  decodeBase64(encoded: string): string;
 }
 
 export const _: QuerybaseUtils = {
@@ -141,20 +140,7 @@ export const _: QuerybaseUtils = {
       /* istanbul ignore next */
       return window.btoa(data);
     }
-  },
-
-  /**
-   * Universal base64 decode method
-   * @param {string} data
-   * @return {string}
-   */  
-  decodeBase64(encoded: string): string {
-    if (this.isCommonJS()) {
-      return new Buffer(encoded, 'base64').toString('ascii');
-    } else {
-      return window.atob(encoded); 
-    }
-  },  
+  }, 
 
   /**
    * Creates an object from a keys array and a values array.
