@@ -6,7 +6,6 @@ const mocha = require('gulp-mocha');
 const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
 const firebaseServer = require('./tests/firebaseServer');
-const uglify = require('gulp-uglify');
 const size = require('gulp-filesize');
 const execSync = require('child_process').execSync;
 
@@ -17,6 +16,7 @@ gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/i
 gulp.task('ts', () => {
   const tsCode = execSync('tsc');
   const rollupCode = execSync('node rollup.config');
+  const uglifyCode = execSync('uglifyjs --compress --mangle -- ./dist/querybase.umd.js > ./dist/querybase.umd.min.js')
 });
 
 gulp.task('pre-test', () => {

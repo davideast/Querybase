@@ -2,8 +2,9 @@
 <html>
 
 <head>
-	<script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
-	<script src="querybase.umd.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/3.6.1/firebase-database.js"></script>
+	<script src="querybase.umd.min.js"></script>
 	<meta charset="utf-8">
 	<title>Querybase</title>
 </head>
@@ -14,15 +15,15 @@
 	<script>
 		// Initialize Firebase
 		var config = {
-			apiKey: "AIzaSyBonePK0eTlXuhy3Oy0KYc6g1_UrVtEXqs",
-			authDomain: "querybase-b565d.firebaseapp.com",
-			databaseURL: "https://querybase-b565d.firebaseio.com",
-			storageBucket: "querybase-b565d.appspot.com",
+			apiKey: 'AIzaSyBonePK0eTlXuhy3Oy0KYc6g1_UrVtEXqs',
+			authDomain: 'querybase-b565d.firebaseapp.com',
+			databaseURL: 'https://querybase-b565d.firebaseio.com',
+			storageBucket: 'querybase-b565d.appspot.com',
 		};
 		firebase.initializeApp(config);
 
 		var ref = firebase.database().ref();
-		var peopleRef = ref.child("people");
+		var peopleRef = ref.child('people');
 		var queryRef = querybase.ref(peopleRef, ['name', 'age', 'location']);
 		
 		btnSeed.addEventListener('click', function(e) {

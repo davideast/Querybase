@@ -2,6 +2,7 @@ import { _, QueryPredicate, QuerybaseUtils} from './QuerybaseUtils';
 import { QuerybaseQuery } from './QuerybaseQuery';
 import * as firebase from 'firebase';
 
+// Convience types, removes the visual noise of namespacing
 export type DatabaseReference = firebase.database.Reference;
 export type DatabaseQuery = firebase.database.Query;
 

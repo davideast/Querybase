@@ -1,4 +1,4 @@
-export type DatabaseQuery = firebase.database.Query;
+import { DatabaseQuery } from './Querybase';
 
 /**
  * QuerybaseQuery - Provides a simple querying API
