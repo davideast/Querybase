@@ -6,7 +6,6 @@ const mocha = require('gulp-mocha');
 const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
 const firebaseServer = require('./tests/firebaseServer');
-const uglify = require('gulp-uglify');
 const size = require('gulp-filesize');
 const execSync = require('child_process').execSync;
 
