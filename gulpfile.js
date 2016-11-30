@@ -14,9 +14,15 @@ const exit = () => process.exit(0);
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist']));
 
 gulp.task('ts', () => {
-  const tsCode = execSync('tsc');
-  const rollupCode = execSync('node rollup.config');
-  const uglifyCode = execSync('uglifyjs --compress --mangle -- ./dist/querybase.umd.js > ./dist/querybase.umd.min.js');
+  const tsCode = execSync('tsc').toString('utf8');
+  console.log('tsc');
+  console.log(tsCode);
+  const rollupCode = execSync('node rollup.config').toString('utf8');
+  console.log('node rollup.config');
+  console.log(rollupCode);
+  const uglifyCode = execSync('uglifyjs --compress --mangle -- ./dist/querybase.umd.js > ./dist/querybase.umd.min.js').toString('utf8');
+  console.log('uglifyjs --compress --mangle -- ./dist/querybase.umd.js > ./dist/querybase.umd.min.js');
+  console.log(uglifyCode);
 });
 
 gulp.task('pre-test', () => {
