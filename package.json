@@ -2,7 +2,7 @@
   "name": "querybase",
   "version": "0.5.0",
   "description": "Bringing the where statement to Firebase",
-  "main": "dist/querybase.umd.js",
+  "main": "dist/querybase.umd.min.js",
   "scripts": {
     "start": "gulp",
     "test": "gulp"
