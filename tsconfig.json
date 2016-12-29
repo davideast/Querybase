@@ -13,5 +13,11 @@
             "firebase",
             "node"
         ]
-    }
+    },
+    "files": [
+        "./src/entry.ts",
+        "./src/Querybase.ts",
+        "./src/QuerybaseQuery.ts",
+        "./src/QuerybaseUtils.ts"
+    ]
 }

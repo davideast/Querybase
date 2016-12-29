@@ -3,8 +3,6 @@ node_js:
 - stable
 before_script:
   - npm install -g gulp
-  - npm install -g typescript
-  - npm install uglify-js -g
 script: "npm start"
 after_script:
 - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

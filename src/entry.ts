@@ -4,7 +4,7 @@ import { QuerybaseQuery } from './QuerybaseQuery';
 
 /**
  * Convienence function to match Firebase SDK design.
- * use: 
+ * use:
  *  const ref = firebase.database.ref('items');
  *  querybase.ref(ref, ['prop1', 'prop2']);
  */
