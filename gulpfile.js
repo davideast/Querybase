@@ -28,7 +28,8 @@ gulp.task('ts', () => {
 gulp.task('rollup', () => {
   return gulp.src('./es6/entry.js')
     .pipe(rollup({
-      entry: './es6/entry.js'
+      entry: './es6/entry.js',
+      moduleName: 'querybase'
     }, 'umd'))
     .pipe(rename('querybase.umd.js'))
     .pipe(gulp.dest('./dist'));
