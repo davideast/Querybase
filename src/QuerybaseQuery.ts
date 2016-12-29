@@ -2,16 +2,16 @@ export type DatabaseQuery = firebase.database.Query;
 
 /**
  * QuerybaseQuery - Provides a simple querying API
- * 
+ *
  * A QuerybaseQuery is created through using a string criteria
  * on a Querybase reference. It is not meant to be directly created.
- * 
- * @param {DatabaseQuery} query 
- * 
+ *
+ * @param {DatabaseQuery} query
+ *
  * @example
  *  const firebaseRef = firebase.database.ref.child('people');
  *  const querybaseRef = querybase.ref(firebaseRef, ['name', 'age', 'location']);
- * 
+ *
  *  // Querybase for a single string criteria, returns
  *  // a QuerybaseQuery, which returns a Firebase Ref
  *  querybaseRef.where('name').startsWith('Da');
@@ -62,8 +62,7 @@ export class QuerybaseQuery {
    * @return {DatabaseQuery}
    */
   startsWith(value: string) {
-    const firstChar = value.substr(0, 1);
-    return this.query().startAt(firstChar).endAt(`${value}\uf8ff`);
+    return this.query().startAt(value).endAt(`${value}\uf8ff`);
   }
 
   /**
