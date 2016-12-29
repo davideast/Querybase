@@ -16,7 +16,7 @@
     },
     "files": [
         "./src/entry.ts",
-        "./src/Querybase.ts",
+        "./src/querybase.ts",
         "./src/QuerybaseQuery.ts",
         "./src/QuerybaseUtils.ts"
     ]
