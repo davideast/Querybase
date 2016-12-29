@@ -13,6 +13,7 @@
 - **.where()** - Find records by up to three fields.
 - **No client-side filtering** - Querybase genererates composite keys to provide querying on multiple fields.
 - **Simple Query API** - Use common query methods such as `.greaterThan()`, `.lessThan()`, and `.startsWith()`.
+- **Lightweight** - 1.87 kB (gzipped)
 
 ## Install
 
@@ -23,7 +24,7 @@ npm install querybase --save
 Use via [unpkg](https://unpkg.com)
 
 ```html
-<script src="https://unpkg.com/querybase@0.4.0"></script>
+<script src="https://unpkg.com/querybase@0.6.0"></script>
 ```
 
 ## Example usage
