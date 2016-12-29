@@ -24,10 +24,13 @@
 		var ref = firebase.database().ref();
 		var peopleRef = ref.child("people");
 		var queryRef = querybase.ref(peopleRef, ['name', 'age', 'location']);
-		
+
 		btnSeed.addEventListener('click', function(e) {
 			peopleRef.remove();
-			addPerson('David_East', 27, 'SF');
+			addPerson('David', 27, 'SF');
+			addPerson('Daniel', 34, 'SF');
+			addPerson('Dan', 93, 'DEN');
+			addPerson('Devin', 27, 'SF');
 			addPerson('Shannon', 28, 'SF');
 			addPerson('Coco', 1, 'SF');
 			addPerson('Cash', 3, 'SF');
@@ -36,13 +39,13 @@
 			addPerson('Molly', 6, 'SF');
 			addPerson('Mambo', 4, 'DEN');
 		});
-		
+
 		function listen(ref) {
-			ref.on('value', function(snap) { 
+			ref.on('value', function(snap) {
 				console.log(snap.val());
 			});
 		}
-		
+
 		function addPerson(name, age, location, weight) {
 			queryRef.push({
 				name: name,
@@ -50,7 +53,7 @@
 				location: location
 			});
 		}
-			
+
 	</script>
 
 </body>
