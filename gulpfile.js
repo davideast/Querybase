@@ -24,9 +24,6 @@ gulp.task('ts', () => {
 
   return tsResult.js
     .pipe(gulp.dest('./es6'));
-  // const tsCode = execSync('tsc');
-  // const rollupCode = execSync('node rollup.config');
-  // const uglifyCode = execSync('uglifyjs --compress --mangle -- ./dist/querybase.umd.js > ./dist/querybase.umd.min.js');
 });
 
 gulp.task('rollup', () => {
