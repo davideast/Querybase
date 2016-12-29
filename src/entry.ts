@@ -1,4 +1,4 @@
-import { Querybase, DatabaseReference } from './Querybase';
+import { Querybase, DatabaseReference } from './querybase';
 import { _ } from './QuerybaseUtils';
 import { QuerybaseQuery } from './QuerybaseQuery';
 
