@@ -6,3 +6,4 @@ coverage
 es6
 .DS_Store
 .vscode/
+npm-debug.log
