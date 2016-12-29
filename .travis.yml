@@ -3,7 +3,6 @@ node_js:
 - stable
 before_script:
   - npm install -g gulp
-  - ./node_modules/.bin/tsc
 script: "npm start"
 after_script:
 - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

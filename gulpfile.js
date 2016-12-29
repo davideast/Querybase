@@ -76,4 +76,4 @@ gulp.task('firebaseServer', () => {
   firebaseServer.initializeApp();
 });
 
-gulp.task('default', runSequence('rollup', 'test', 'uglify', 'size', exit));
+gulp.task('default', runSequence('clean', 'ts', 'rollup', 'test', 'uglify', 'size', exit));
