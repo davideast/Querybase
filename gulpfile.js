@@ -21,12 +21,8 @@ gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/i
 gulp.task('ts', () => {
   const tsResult = tsProject.src()
     .pipe(tsProject());
-
   return tsResult.js
     .pipe(gulp.dest('./es6'));
-  // const tsCode = execSync('tsc');
-  // const rollupCode = execSync('node rollup.config');
-  // const uglifyCode = execSync('uglifyjs --compress --mangle -- ./dist/querybase.umd.js > ./dist/querybase.umd.min.js');
 });
 
 gulp.task('rollup', () => {
@@ -64,7 +60,6 @@ gulp.task('pre-test', () => {
     .pipe(istanbul.hookRequire());
 });
 
-// Use for build process, continues stream
 gulp.task('test', ['firebaseServer', 'pre-test'], () => {
   return gulp
    .src('./tests/unit/**.spec.js', { read: false })
