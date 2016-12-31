@@ -1,13 +1,14 @@
 'use strict'
-const firebaseServer = require('../firebaseServer');
-const querybase = require('../../dist/querybase.umd');
+import * as firebaseServer from '../firebaseServer';
+import * as querybase from '../../entry';
+import * as helpers from '../helpers';
+import * as assert from 'assert';
+import * as chai from 'chai';
+import * as sinon from 'sinon';
+
 const Querybase = querybase.Querybase;
 const QuerybaseQuery = querybase.QuerybaseQuery;
-const helpers = require('../helpers');
 const _ = querybase.QuerybaseUtils;
-const assert = require('assert');
-const chai = require('chai');
-const sinon = require('sinon');
 const expect = chai.expect;
 
 // disable warnings
@@ -45,12 +46,12 @@ describe('Querybase', () => {
   describe('constructor', () => {
 
     it('should throw if no Firebase ref is provided', () => {
-      const errorWrapper = () => new Querybase();
+      const errorWrapper = () => new Querybase(null, null);
       expect(errorWrapper).to.throw(Error);
     });
 
     it('should throw if no indexes are provided', () => {
-      const errorWrapper = () => new Querybase(ref);
+      const errorWrapper = () => new Querybase(ref, null);
       expect(errorWrapper).to.throw(Error);
     });
 

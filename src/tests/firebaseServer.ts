@@ -1,4 +1,4 @@
-const firebase = require("firebase");
+import * as firebase from 'firebase';
 
 /**
  * Initialize the app with a service account, granting admin privileges
@@ -6,7 +6,7 @@ const firebase = require("firebase");
 function initializeApp() {
   firebase.initializeApp({
     databaseURL: "https://querybase-b565d.firebaseio.com"
-  }); 
+  });
 }
 
 /**
@@ -14,14 +14,14 @@ function initializeApp() {
  */
 function getRef() {
   const db = firebase.database();
-  
+
   // go offline for testing
   db.goOffline();
-  
+
   return db.ref();
 }
 
-module.exports = {
-  ref: getRef,
-  initializeApp: initializeApp
+export {
+  getRef as ref,
+  initializeApp
 };

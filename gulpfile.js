@@ -5,14 +5,14 @@ const del = require('del');
 const mocha = require('gulp-mocha');
 const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
-const firebaseServer = require('./tests/firebaseServer');
+const firebaseServer = require('./src/tests/firebaseServer');
 const uglify = require('gulp-uglify');
 const size = require('gulp-size');
 const ts = require('gulp-typescript');
 const rollup = require('gulp-better-rollup')
 const rename = require('gulp-rename');
 const tsProject = ts.createProject('tsconfig.json');
-const execSync = require('child_process').execSync;
+const testTsProject = ts.createProject('tsconfig.test.json');
 
 const exit = () => process.exit(0);
 
@@ -52,18 +52,30 @@ gulp.task('size', () => {
     }));
 });
 
+gulp.task('ts-tests', () => {
+  const tsResult = testTsProject.src()
+    .pipe(testTsProject());
+  return tsResult.js
+    .pipe(gulp.dest('./dist'));
+});
+
 gulp.task('pre-test', () => {
   return gulp
-    .src(['./dist/querybase.umd.js'])
+    .src([
+      './dist/entry.js',
+      './dist/querybase.js',
+      './dist/QuerybaseQuery.js',
+      './dist/QuerybaseUtils.js',
+    ])
     // Covering files
     .pipe(istanbul())
     // Force `require` to return covered files
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['firebaseServer', 'pre-test'], () => {
+gulp.task('test', ['firebaseServer'], () => {
   return gulp
-   .src('./tests/unit/**.spec.js', { read: false })
+   .src('./dist/tests/unit/**.spec.js', { read: false })
 	 .pipe(mocha({ reporter: 'spec' }))
    .pipe(istanbul.writeReports());
 });
@@ -72,4 +84,15 @@ gulp.task('firebaseServer', () => {
   firebaseServer.initializeApp();
 });
 
-gulp.task('default', runSequence('clean', 'ts', 'rollup', 'test', 'uglify', 'size', exit));
+gulp.task('default', runSequence(
+  'clean',
+  'ts',
+  'rollup',
+  'ts-tests',
+  'pre-test',
+  'test',
+  'uglify',
+  'size',
+  exit
+  )
+);

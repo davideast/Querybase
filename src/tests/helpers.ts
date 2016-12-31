@@ -1,5 +1,5 @@
 "use strict";
-const querybase = require('../dist/querybase.umd');
+import * as querybase from '../entry';
 const Querybase = querybase.Querybase;
 const QuerybaseQuery = querybase.QuerybaseQuery;
 
@@ -18,7 +18,7 @@ function isQuerybaseQuery(query) {
  */
 function isQuerybaseRef(ref) {
   const type = Object.getPrototypeOf(ref);
-  return type === Querybase.prototype;  
+  return type === Querybase.prototype;
 }
 
 /**
@@ -47,8 +47,10 @@ function isFirebaseQuery(query) {
   return isFunction(query.startAt);
 }
 
-module.exports.isFunction = isFunction;
-module.exports.isFirebaseRef = isFirebaseRef;
-module.exports.isFirebaseQuery = isFirebaseQuery;
-module.exports.isQuerybaseRef = isQuerybaseRef;
-module.exports.isQuerybaseQuery = isQuerybaseQuery;
+export {
+  isFunction,
+  isFirebaseRef,
+  isFirebaseQuery,
+  isQuerybaseRef,
+  isQuerybaseQuery
+}

@@ -3,3 +3,9 @@ logos
 examples
 coverage
 es6
+tests
+dist/tests
+dist/entry.js
+dist/querybase.js
+dist/QuerybaseQuery.js
+dist/QuerybaseUtils.js
