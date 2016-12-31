@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
-        "module": "es6",
+        "module": "commonjs",
         "noImplicitAny": false,
-        "removeComments": true,
+        "removeComments": false,
         "preserveConstEnums": true,
-        "outDir": "es6",
+        "outDir": "dist",
+        "allowJs": true,
         "sourceMap": true,
         "typeRoots": [
             "node_modules/@types"
@@ -16,6 +17,6 @@
         ]
     },
     "include": [
-        "./src/**/*.ts"
+        "./src/**/*"
     ]
 }

@@ -23,7 +23,7 @@ export type DatabaseQuery = firebase.database.Query;
 export class QuerybaseQuery {
 
   // read-only DatabaseQuery
-  private query: () => DatabaseQuery;
+  public query: () => DatabaseQuery;
 
   constructor(query: DatabaseQuery) {
     this.query = () => query;

@@ -16,7 +16,10 @@
     "dist"
   ],
   "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.35",
     "@types/node": "^6.0.51",
+    "@types/sinon": "^1.16.34",
     "chai": "^3.4.1",
     "coveralls": "^2.11.9",
     "del": "^2.2.0",
