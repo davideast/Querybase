@@ -62,7 +62,7 @@ Querybase also provides rich querying methods for single fields.
  
  ```js
  const databaseRef = firebase.database.ref().child('people');
- const querybaseRef = querybase.ref(databaseRef);
+ const querybaseRef = querybase.ref(databaseRef, []);
  // Querybase for single criteria, returns a Firebase Ref
  querybaseRef.where({ name: 'David'});
   
