@@ -8,6 +8,8 @@
 
 #### Querybase is in an experiment and not for production apps/sites/anything.
 
+## [Cloud Firestore](https://firebase.google.com/docs/firestore/) makes this library irrelevant as it has much more complex querying.
+
 ## What is Querybase?
 
 - **.where()** - Find records by up to three fields.
