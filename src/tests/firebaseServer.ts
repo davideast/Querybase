@@ -1,4 +1,4 @@
-import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
 
 /**
  * Initialize the app with a service account, granting admin privileges
