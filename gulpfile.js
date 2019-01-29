@@ -3,18 +3,17 @@
 const gulp = require('gulp');
 const del = require('del');
 const mocha = require('gulp-mocha');
-const runSequence = require('run-sequence');
 const istanbul = require('gulp-istanbul');
 const firebaseServer = require('./src/tests/firebaseServer');
 const uglify = require('gulp-uglify');
 const size = require('gulp-size');
 const ts = require('gulp-typescript');
-const rollup = require('gulp-better-rollup')
+const rollup = require('gulp-better-rollup');
 const rename = require('gulp-rename');
 const tsProject = ts.createProject('tsconfig.json');
 const testTsProject = ts.createProject('tsconfig.test.json');
 
-const exit = () => process.exit(0);
+const exit = (done) => done();
 
 gulp.task('clean', () => del(['examples/*.js', 'examples/*.js.map', '!examples/index.js', 'dist', 'es6']));
 
@@ -73,18 +72,19 @@ gulp.task('pre-test', () => {
     .pipe(istanbul.hookRequire());
 });
 
-gulp.task('test', ['firebaseServer'], () => {
+gulp.task('firebaseServer', (done) => {
+  firebaseServer.initializeApp();
+  done();
+});
+
+gulp.task('test', gulp.series('firebaseServer'), () => {
   return gulp
    .src('./dist/tests/unit/**.spec.js', { read: false })
 	 .pipe(mocha({ reporter: 'spec' }))
    .pipe(istanbul.writeReports());
 });
 
-gulp.task('firebaseServer', () => {
-  firebaseServer.initializeApp();
-});
-
-gulp.task('default', runSequence(
+gulp.task('default', gulp.series(
   'clean',
   'ts',
   'rollup',
@@ -93,6 +93,6 @@ gulp.task('default', runSequence(
   'test',
   'uglify',
   'size',
-  exit
+  exit,
   )
 );
