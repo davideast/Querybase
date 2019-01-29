@@ -2,6 +2,7 @@
   "name": "querybase",
   "version": "0.6.0",
   "description": "Bringing the where statement to Firebase",
+  "repository": "https://github.com/davideast/Querybase.git",
   "main": "dist/querybase.umd.min.js",
   "scripts": {
     "start": "gulp",
@@ -21,25 +22,25 @@
     "@types/node": "^6.0.51",
     "@types/sinon": "^1.16.34",
     "chai": "^3.4.1",
-    "coveralls": "^2.11.9",
+    "coveralls": "^3.0.2",
     "del": "^2.2.0",
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.0",
     "gulp-better-rollup": "^1.0.2",
-    "gulp-istanbul": "^0.10.3",
-    "gulp-mocha": "^2.2.0",
+    "gulp-istanbul": "^1.1.3",
+    "gulp-mocha": "^6.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-rollup": "^2.5.1",
     "gulp-size": "^2.1.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^3.1.3",
     "gulp-uglify": "^2.0.0",
-    "mocha": "^2.3.4",
+    "mocha": "^5.2.0",
     "rollup": "^0.36.4",
     "run-sequence": "^1.1.5",
     "sinon": "^1.17.2",
     "typescript": "^2.0.10"
   },
   "dependencies": {
-    "firebase": "^3.6.1"
+    "firebase": "^5.8.1"
   }
 }
